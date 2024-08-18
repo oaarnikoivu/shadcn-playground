@@ -1,13 +1,7 @@
+import { Button } from "@/components/ui/button";
+import { SUPPORTED_COMPONENTS } from "@/constants";
+import useComponentStore from "@/stores/component.store";
 import { BookOpen } from "lucide-react";
-import { Button } from "../ui/button";
-import {
-  Sheet,
-  SheetContent,
-  SheetDescription,
-  SheetHeader,
-  SheetTitle,
-  SheetTrigger,
-} from "../ui/sheet";
 import {
   Command,
   CommandEmpty,
@@ -16,33 +10,25 @@ import {
   CommandItem,
   CommandList,
 } from "../ui/command";
-import { useState } from "react";
-
-const components = [
-  {
-    value: "accordion",
-    label: "Accordion",
-    kbd: "AC",
-  },
-  {
-    value: "avatar",
-    label: "Avatar",
-    kbd: "AV",
-  },
-  {
-    value: "button",
-    label: "Button",
-    kbd: "B",
-  },
-  {
-    value: "input",
-    label: "Input",
-    kbd: "I",
-  },
-];
+import {
+  Sheet,
+  SheetContent,
+  SheetDescription,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from "../ui/sheet";
 
 export default function ComponentsSheet() {
-  const [value, setValue] = useState("");
+  const { addComponent } = useComponentStore();
+
+  const handleSelectComponent = (componentType: string) =>
+    addComponent({
+      id: crypto.randomUUID(),
+      type: componentType as (typeof SUPPORTED_COMPONENTS)[number],
+      // TODO: get valid coordinates
+      coordinates: { x: 0, y: 0 },
+    });
 
   return (
     <Sheet modal={false}>
@@ -64,16 +50,14 @@ export default function ComponentsSheet() {
           <CommandList>
             <CommandEmpty>No component found.</CommandEmpty>
             <CommandGroup>
-              {components.map((component, index) => (
+              {SUPPORTED_COMPONENTS.map((component, index) => (
                 <CommandItem
-                  key={component.value}
-                  value={component.value}
-                  className="cursor-pointer flex items-center justify-between"
-                  onSelect={(currentValue) => {
-                    setValue(currentValue === value ? "" : currentValue);
-                  }}
+                  key={component}
+                  value={component}
+                  className="cursor-pointer flex items-center justify-between capitalize"
+                  onSelect={handleSelectComponent}
                 >
-                  {component.label}
+                  {component}
                   <kbd className="border px-1.5 rounded-md uppercase">
                     {index + 1}
                   </kbd>

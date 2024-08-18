@@ -29,6 +29,9 @@ module.exports = {
         "4xl": "2.441rem",
         "5xl": "3.052rem",
       },
+      height: {
+        header: "var(--header-height)",
+      },
       colors: {
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
