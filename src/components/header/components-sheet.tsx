@@ -32,7 +32,7 @@ export default function ComponentsSheet() {
 
   return (
     <Sheet modal={false}>
-      <SheetTrigger>
+      <SheetTrigger asChild>
         <Button variant="secondary" className="flex items-center gap-2">
           <BookOpen className="size-3" />
           Components
