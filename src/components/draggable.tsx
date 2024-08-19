@@ -42,9 +42,16 @@ export default function Draggable({ component }: DraggableProps) {
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       const target = event.target as HTMLElement;
+
+      const isMenuOpen = !!document.getElementById("menu");
+      const isInsideEditor = target.closest("#editor");
+
       if (
         target.id !== component.id &&
         target.id !== "bbox" &&
+        target.id !== "menu" &&
+        !isMenuOpen &&
+        !isInsideEditor &&
         component?.selected
       ) {
         updateComponent({ ...component, selected: false });

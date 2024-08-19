@@ -80,7 +80,7 @@ export default function Menu() {
           <MenuIcon className="size-4" />
         </Button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent className="w-56 ml-4">
+      <DropdownMenuContent id="menu" className="w-56 ml-4">
         <DropdownMenuItem>
           <Folder className="size-3 mr-2" />
           Open
