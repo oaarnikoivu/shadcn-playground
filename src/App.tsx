@@ -10,13 +10,13 @@ function App() {
   return (
     <>
       <Header />
+      <DragSelection />
+      <BoundingBox />
       <main id="canvas" className="w-screen h-[calc(100vh-80px)] relative">
-        <DragSelection />
         {components.map((component) => (
           <Draggable key={component.id} component={component} />
         ))}
       </main>
-      <BoundingBox />
     </>
   );
 }

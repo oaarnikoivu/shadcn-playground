@@ -3,11 +3,13 @@ import { useCallback, useEffect, useRef } from "react";
 
 type DraggableOptions = {
   initialCoordinates?: Coordinate;
+  onDrag?: (x: number, y: number) => void;
   onDragEnd: () => void;
 };
 
 export default function useDraggable({
   initialCoordinates,
+  onDrag,
   onDragEnd,
 }: DraggableOptions) {
   const divRef = useRef<HTMLDivElement>(null);
@@ -37,19 +39,24 @@ export default function useDraggable({
     // e.preventDefault();
   }, []);
 
-  const handleMouseMove = useCallback((e: MouseEvent) => {
-    if (!divRef.current) return;
-    if (!isDragging.current) return;
+  const handleMouseMove = useCallback(
+    (e: MouseEvent) => {
+      if (!divRef.current) return;
+      if (!isDragging.current) return;
 
-    const newX = e.clientX - position.current.x;
-    const newY = e.clientY - position.current.y;
+      const newX = e.clientX - position.current.x;
+      const newY = e.clientY - position.current.y;
 
-    divRef.current.style.left = `${newX}px`;
-    divRef.current.style.top = `${newY}px`;
+      divRef.current.style.left = `${newX}px`;
+      divRef.current.style.top = `${newY}px`;
 
-    e.stopPropagation();
-    e.preventDefault();
-  }, []);
+      onDrag?.(newX, newY);
+
+      e.stopPropagation();
+      e.preventDefault();
+    },
+    [onDrag],
+  );
 
   const handleMouseUp = useCallback(
     (e: MouseEvent) => {
@@ -60,7 +67,7 @@ export default function useDraggable({
         e.preventDefault();
       }
     },
-    [onDragEnd]
+    [onDragEnd],
   );
 
   useEffect(() => {

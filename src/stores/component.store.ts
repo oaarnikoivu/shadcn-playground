@@ -5,8 +5,9 @@ import { persist } from "zustand/middleware";
 
 type ComponentStoreState = {
   components: PlaygroundUIComponent[];
+  boundingBox: Box | null;
+  setBoundingBox: (box: Box | null) => void;
   getSelectedComponents: () => PlaygroundUIComponent[];
-  getBoundingBox: () => Box | null;
   addComponent: (component: PlaygroundUIComponent) => void;
   removeComponent: (component: PlaygroundUIComponent) => void;
   updateComponent: (component: PlaygroundUIComponent) => void;
@@ -19,38 +20,10 @@ export const useComponentStore = create<ComponentStoreState>()(
   persist(
     (set, get) => ({
       components: [],
+      boundingBox: null,
+      setBoundingBox: (box: Box | null) => set({ boundingBox: box }),
       getSelectedComponents: () =>
         get().components.filter((component) => component.selected),
-      getBoundingBox: () => {
-        let minLeft = Infinity;
-        let minTop = Infinity;
-        let maxRight = -Infinity;
-        let maxBottom = -Infinity;
-
-        const { getSelectedComponents } = get();
-
-        if (getSelectedComponents().length <= 1) {
-          return null;
-        }
-
-        getSelectedComponents().forEach((c) => {
-          const el = document.getElementById(c.id);
-          if (el) {
-            const rect = el.getBoundingClientRect();
-            if (rect.left < minLeft) minLeft = rect.left;
-            if (rect.top < minTop) minTop = rect.top;
-            if (rect.right > maxRight) maxRight = rect.right;
-            if (rect.bottom > maxBottom) maxBottom = rect.bottom;
-          }
-        });
-
-        return {
-          left: minLeft,
-          top: minTop,
-          width: maxRight - minLeft,
-          height: maxBottom - minTop,
-        };
-      },
       addComponent: (component: PlaygroundUIComponent) =>
         set((state) => ({
           components: [...state.components, component],
@@ -62,7 +35,7 @@ export const useComponentStore = create<ComponentStoreState>()(
       updateComponent: (component: PlaygroundUIComponent) =>
         set((state) => ({
           components: state.components.map((c) =>
-            c.id === component.id ? { ...c, ...component } : c
+            c.id === component.id ? { ...c, ...component } : c,
           ),
         })),
       updateComponents: (updatedComponents: PlaygroundUIComponent[]) =>
@@ -77,15 +50,15 @@ export const useComponentStore = create<ComponentStoreState>()(
           components: state.components.map((component) =>
             ids.includes(component.id)
               ? { ...component, selected: true }
-              : component
+              : component,
           ),
         })),
       clearCanvas: () => set({ components: [] }),
     }),
     {
       name: "component-storage",
-    }
-  )
+    },
+  ),
 );
 
 export default useComponentStore;

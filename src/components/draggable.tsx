@@ -11,7 +11,7 @@ type DraggableProps = {
 };
 
 export default function Draggable({ component }: DraggableProps) {
-  const { updateComponent } = useComponentStore();
+  const { setBoundingBox, updateComponent } = useComponentStore();
 
   const { ref, getCurrentPosition, onDrag } = useDraggable({
     initialCoordinates: component.coordinates,
@@ -42,8 +42,13 @@ export default function Draggable({ component }: DraggableProps) {
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       const target = event.target as HTMLElement;
-      if (target.id !== component.id && component?.selected) {
+      if (
+        target.id !== component.id &&
+        target.id !== "bbox" &&
+        component?.selected
+      ) {
         updateComponent({ ...component, selected: false });
+        setBoundingBox(null);
       }
     };
 
@@ -52,7 +57,7 @@ export default function Draggable({ component }: DraggableProps) {
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
-  }, [component, updateComponent]);
+  }, [component, setBoundingBox, updateComponent]);
 
   return (
     <div
@@ -60,7 +65,7 @@ export default function Draggable({ component }: DraggableProps) {
       ref={ref}
       className={cn(
         component.selected &&
-          "z-10 ring-2 outline-none ring-ring ring-offset-background ring-offset-2 rounded-md"
+          "ring-2 outline-none ring-ring ring-offset-background ring-offset-2 rounded-md",
       )}
       style={{
         position: "absolute",
