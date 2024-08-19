@@ -31,11 +31,8 @@ export default function Draggable({ component }: DraggableProps) {
   const handleSelectComponent = () => {
     updateComponents(
       selectedComponents
-        .map((c) => ({
-          ...c,
-          selected: false,
-        }))
-        .concat({ ...component, selected: !component.selected }),
+        .map((c) => ({ ...c, selected: false }))
+        .concat({ ...component, selected: true }),
     );
   };
 

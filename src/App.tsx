@@ -3,7 +3,7 @@ import DragSelection from "./components/drag-selection";
 import Draggable from "./components/draggable";
 import Header from "./components/header";
 import useComponentStore from "./stores/component.store";
-import Editor from "@/components/editor.tsx";
+import Editor from "@/components/editor";
 import Footer from "@/components/footer";
 
 function App() {
