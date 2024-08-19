@@ -11,7 +11,11 @@ type DraggableProps = {
 };
 
 export default function Draggable({ component }: DraggableProps) {
-  const { setBoundingBox, updateComponent } = useComponentStore();
+  const { setBoundingBox, updateComponent, updateComponents } =
+    useComponentStore();
+  const selectedComponents = useComponentStore((state) =>
+    state.getSelectedComponents(),
+  );
 
   const { ref, getCurrentPosition, onDrag } = useDraggable({
     initialCoordinates: component.coordinates,
@@ -25,7 +29,14 @@ export default function Draggable({ component }: DraggableProps) {
   });
 
   const handleSelectComponent = () => {
-    updateComponent({ ...component, selected: !component.selected });
+    updateComponents(
+      selectedComponents
+        .map((c) => ({
+          ...c,
+          selected: false,
+        }))
+        .concat({ ...component, selected: !component.selected }),
+    );
   };
 
   const renderComponent = () => {

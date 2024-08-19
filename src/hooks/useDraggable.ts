@@ -35,8 +35,8 @@ export default function useDraggable({
     };
 
     // Might need these in the future:
-    // e.stopPropagation();
-    // e.preventDefault();
+    e.stopPropagation();
+    e.preventDefault();
   }, []);
 
   const handleMouseMove = useCallback(
