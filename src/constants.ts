@@ -4,3 +4,19 @@ export const SUPPORTED_COMPONENTS = [
   "button",
   "input",
 ] as const;
+
+export const BUTTON_SIZES = {
+  default: "Default",
+  sm: "Small",
+  lg: "Large",
+  icon: "Icon",
+};
+
+export const BUTTON_VARIANTS = {
+  default: "Default",
+  destructive: "Destructive",
+  outline: "Outline",
+  secondary: "Secondary",
+  ghost: "Ghost",
+  link: "Link",
+};

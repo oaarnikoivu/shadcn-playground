@@ -28,6 +28,10 @@ export default function ComponentsSheet() {
       type: componentType as (typeof SUPPORTED_COMPONENTS)[number],
       // TODO: get valid coordinates
       coordinates: { x: 0, y: 0 },
+      properties: {
+        size: "default",
+        variant: "default",
+      },
     });
 
   return (

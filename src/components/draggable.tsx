@@ -42,7 +42,14 @@ export default function Draggable({ component }: DraggableProps) {
   const renderComponent = () => {
     switch (component.type) {
       case "button":
-        return <Button>Value</Button>;
+        return (
+          <Button
+            variant={component.properties.variant}
+            size={component.properties.size}
+          >
+            Value
+          </Button>
+        );
       case "input":
         return <Input className="focus-visible:outline-none" />;
       default:
