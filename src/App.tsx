@@ -5,9 +5,12 @@ import Header from "./components/header";
 import useComponentStore from "./stores/component.store";
 import Editor from "@/components/editor";
 import Footer from "@/components/footer";
+import useTheme from "@/hooks/useTheme.ts";
 
 function App() {
-  const { components } = useComponentStore();
+  const components = useComponentStore((state) => state.components);
+
+  useTheme();
 
   return (
     <>

@@ -1,3 +1,5 @@
+export const THEMES = ["light", "dark", "system"] as const;
+
 export const SUPPORTED_COMPONENTS = [
   "accordion",
   "avatar",

@@ -20,7 +20,7 @@ import {
 } from "../ui/sheet";
 
 export default function ComponentsSheet() {
-  const { addComponent } = useComponentStore();
+  const addComponent = useComponentStore((state) => state.addComponent);
 
   const handleSelectComponent = (componentType: string) =>
     addComponent({

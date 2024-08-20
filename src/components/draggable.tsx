@@ -11,8 +11,9 @@ type DraggableProps = {
 };
 
 export default function Draggable({ component }: DraggableProps) {
-  const { setBoundingBox, updateComponent, updateComponents } =
-    useComponentStore();
+  const setBoundingBox = useComponentStore((state) => state.setBoundingBox);
+  const updateComponent = useComponentStore((state) => state.updateComponent);
+  const updateComponents = useComponentStore((state) => state.updateComponents);
   const selectedComponents = useComponentStore((state) =>
     state.getSelectedComponents(),
   );

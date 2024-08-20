@@ -3,7 +3,9 @@ import useDraggable from "@/hooks/useDraggable.ts";
 import { Box } from "@air/react-drag-to-select";
 
 export default function BoundingBox() {
-  const { boundingBox, setBoundingBox, updateComponents } = useComponentStore();
+  const boundingBox = useComponentStore((state) => state.boundingBox);
+  const setBoundingBox = useComponentStore((state) => state.setBoundingBox);
+  const updateComponents = useComponentStore((state) => state.updateComponents);
   const selectedComponents = useComponentStore((state) =>
     state.getSelectedComponents(),
   );

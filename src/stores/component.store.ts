@@ -9,14 +9,16 @@ type ComponentStoreState = {
   setBoundingBox: (box: Box | null) => void;
   getSelectedComponents: () => PlaygroundUIComponent[];
   addComponent: (component: PlaygroundUIComponent) => void;
+  copyComponents: (components: PlaygroundUIComponent[]) => void;
   removeComponent: (component: PlaygroundUIComponent) => void;
+  removeComponents: (components: PlaygroundUIComponent[]) => void;
   updateComponent: (component: PlaygroundUIComponent) => void;
   updateComponents: (components: PlaygroundUIComponent[]) => void;
   selectComponents: (ids: string[]) => void;
   clearCanvas: () => void;
 };
 
-export const useComponentStore = create<ComponentStoreState>()(
+const useComponentStore = create<ComponentStoreState>()(
   persist(
     (set, get) => ({
       components: [],
@@ -28,9 +30,31 @@ export const useComponentStore = create<ComponentStoreState>()(
         set((state) => ({
           components: [...state.components, component],
         })),
+      copyComponents: (components: PlaygroundUIComponent[]) =>
+        set((state) => ({
+          components: [
+            ...state.components,
+            ...components.map((component) => ({
+              ...component,
+              id: crypto.randomUUID(),
+              coordinates: {
+                x: component.coordinates.x + 10,
+                y: component.coordinates.y + 10,
+              },
+            })),
+          ],
+          boundingBox: null,
+        })),
       removeComponent: (component: PlaygroundUIComponent) =>
         set((state) => ({
           components: state.components.filter((c) => c.id !== component.id),
+        })),
+      removeComponents: (components: PlaygroundUIComponent[]) =>
+        set((state) => ({
+          components: state.components.filter(
+            (c) => !components.map((c) => c.id).includes(c.id),
+          ),
+          boundingBox: null,
         })),
       updateComponent: (component: PlaygroundUIComponent) =>
         set((state) => ({
@@ -53,7 +77,7 @@ export const useComponentStore = create<ComponentStoreState>()(
               : component,
           ),
         })),
-      clearCanvas: () => set({ components: [] }),
+      clearCanvas: () => set({ components: [], boundingBox: null }),
     }),
     {
       name: "component-storage",
