@@ -18,6 +18,7 @@ export default function useDraggable({
 
   const getCurrentPosition = useCallback(() => {
     if (!divRef.current) return { x: 0, y: 0 };
+
     return {
       x: parseInt(divRef.current.style.left, 10) || 0,
       y: parseInt(divRef.current.style.top, 10) || 0,

@@ -11,7 +11,7 @@ import {
 
 const ACTIONS = ["copy", "delete"] as const;
 
-export default function BaseProperties() {
+export default function Actions() {
   const componentsToUpdate = useComponentStore((state) =>
     state.getSelectedComponents(),
   ).filter((c) => c.selected);

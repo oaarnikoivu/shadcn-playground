@@ -1,4 +1,5 @@
 import { PlaygroundUIComponent } from "@/types/component.ts";
+import { Box } from "@air/react-drag-to-select";
 
 export function createBoundingBox(components: PlaygroundUIComponent[]) {
   let minLeft = Infinity;
@@ -25,15 +26,33 @@ export function createBoundingBox(components: PlaygroundUIComponent[]) {
   };
 }
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export function debounce<T extends (...args: any[]) => void>(
-  func: T,
-  wait: number,
-): T {
-  let timeout: NodeJS.Timeout;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  return function (this: any, ...args: any[]) {
-    clearTimeout(timeout);
-    timeout = setTimeout(() => func.apply(this, args), wait);
-  } as T;
+export function alignCenterHorizontal(
+  boundingBox: Box,
+  components: PlaygroundUIComponent[],
+) {
+  const bboxCenterY = boundingBox.top + boundingBox.height / 2;
+  const bboxDeltaY = bboxCenterY - boundingBox.top;
+
+  return components.map((c) => {
+    const el = document.getElementById(c.id);
+    if (!el) return c;
+
+    const componentElement = el.getBoundingClientRect();
+    const componentTop = componentElement.top;
+    const componentHeight = componentElement.height;
+    const componentCenterY = componentTop + componentHeight / 2;
+
+    const isAboveCenter = componentCenterY < bboxCenterY;
+    const componentDeltaY = componentCenterY - componentTop;
+
+    return {
+      ...c,
+      coordinates: {
+        ...c.coordinates,
+        y: isAboveCenter
+          ? c.coordinates.y + bboxDeltaY - componentDeltaY
+          : c.coordinates.y - bboxDeltaY + componentDeltaY,
+      },
+    };
+  });
 }

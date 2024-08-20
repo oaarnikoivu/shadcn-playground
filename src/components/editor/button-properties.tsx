@@ -4,7 +4,8 @@ import { BUTTON_SIZES, BUTTON_VARIANTS } from "@/constants.ts";
 import { VariantProps } from "class-variance-authority";
 import { Button } from "@/components/ui/button.tsx";
 import useComponentStore from "@/stores/component.store.ts";
-import BaseProperties from "@/components/editor/base-properties.tsx";
+import Actions from "@/components/editor/actions.tsx";
+import Align from "@/components/editor/align.tsx";
 
 export default function ButtonProperties() {
   const componentsToUpdate = useComponentStore((state) =>
@@ -84,7 +85,8 @@ export default function ButtonProperties() {
           ))}
         </ToggleGroup>
       </div>
-      <BaseProperties />
+      <Align />
+      <Actions />
     </>
   );
 }
