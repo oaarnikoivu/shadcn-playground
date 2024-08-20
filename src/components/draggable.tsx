@@ -66,6 +66,7 @@ export default function Draggable({ component }: DraggableProps) {
         target.id !== component.id &&
         target.id !== "bbox" &&
         target.id !== "menu" &&
+        target.id !== "prompt" &&
         !isMenuOpen &&
         !isInsideEditor &&
         component?.selected
