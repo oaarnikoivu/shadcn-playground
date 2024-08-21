@@ -31,6 +31,7 @@ export default function ComponentsSheet() {
       properties: {
         size: "default",
         variant: "default",
+        value: "Hi, world",
       },
     });
 

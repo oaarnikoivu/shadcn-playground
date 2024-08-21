@@ -43,7 +43,7 @@ export default function Draggable({ component }: DraggableProps) {
             variant={component.properties.variant}
             size={component.properties.size}
           >
-            Value
+            {component.properties.value}
           </Button>
         );
       case "input":

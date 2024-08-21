@@ -7,10 +7,14 @@ export type Coordinate = {
   y: number;
 };
 
+type CommonProperties = {
+  value: string;
+};
+
 export type ButtonProperties = {
   size: VariantProps<typeof Button>["size"];
   variant: VariantProps<typeof Button>["variant"];
-};
+} & CommonProperties;
 
 export type PlaygroundUIComponent = {
   id: string;

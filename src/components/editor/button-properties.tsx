@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button.tsx";
 import Actions from "@/components/editor/actions.tsx";
 import Align from "@/components/editor/align.tsx";
 import useStore from "@/stores";
+import Value from "@/components/editor/value.tsx";
 
 export default function ButtonProperties() {
   const componentsToUpdate = useStore((state) =>
@@ -39,6 +40,7 @@ export default function ButtonProperties() {
 
   return (
     <>
+      <Value />
       <div className="space-y-1">
         <Label className="font-semibold">Size</Label>
         <ToggleGroup

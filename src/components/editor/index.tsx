@@ -10,6 +10,7 @@ export default function Editor() {
       <PopoverContent
         id="editor"
         className="w-[280px] absolute left-4 top-20"
+        onOpenAutoFocus={(e) => e.preventDefault()}
         asChild
       >
         <div className="flex flex-col gap-2">
