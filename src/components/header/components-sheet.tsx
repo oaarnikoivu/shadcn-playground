@@ -1,6 +1,5 @@
 import { Button } from "@/components/ui/button";
 import { SUPPORTED_COMPONENTS } from "@/constants";
-import useComponentStore from "@/stores/component.store";
 import { BookOpen } from "lucide-react";
 import {
   Command,
@@ -18,9 +17,10 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "../ui/sheet";
+import useStore from "@/stores";
 
 export default function ComponentsSheet() {
-  const addComponent = useComponentStore((state) => state.addComponent);
+  const addComponent = useStore((state) => state.addComponent);
 
   const handleSelectComponent = (componentType: string) =>
     addComponent({

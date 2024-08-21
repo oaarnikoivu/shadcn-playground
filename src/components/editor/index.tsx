@@ -1,11 +1,9 @@
 import { Popover, PopoverContent } from "@/components/ui/popover.tsx";
-import useComponentStore from "@/stores/component.store.ts";
 import ButtonProperties from "@/components/editor/button-properties.tsx";
+import useStore from "@/stores";
 
 export default function Editor() {
-  const selectedComponents = useComponentStore((state) =>
-    state.getSelectedComponents(),
-  );
+  const selectedComponents = useStore((state) => state.getSelectedComponents());
 
   return (
     <Popover open={selectedComponents.length > 0}>

@@ -1,19 +1,17 @@
 import { AlignCenterHorizontal } from "lucide-react";
 import { Label } from "@/components/ui/label.tsx";
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group.tsx";
-import useComponentStore from "@/stores/component.store.ts";
 import { alignCenterHorizontal } from "@/utils";
+import useStore from "@/stores";
 
 const AlignOptions = {
   "align-center-horizontal": AlignCenterHorizontal,
 };
 
 export default function Align() {
-  const boundingBox = useComponentStore((state) => state.boundingBox);
-  const selectedComponents = useComponentStore((state) =>
-    state.getSelectedComponents(),
-  );
-  const updateComponents = useComponentStore((state) => state.updateComponents);
+  const boundingBox = useStore((state) => state.boundingBox);
+  const selectedComponents = useStore((state) => state.getSelectedComponents());
+  const updateComponents = useStore((state) => state.updateComponents);
 
   const handleAlign = () => {
     if (!boundingBox) return;

@@ -1,4 +1,3 @@
-import useComponentStore from "@/stores/component.store";
 import {
   Download,
   Folder,
@@ -18,9 +17,10 @@ import {
   DropdownMenuTrigger,
 } from "../ui/dropdown-menu";
 import ThemeToggleGroup from "@/components/header/theme-toggle-group.tsx";
+import useStore from "@/stores";
 
 export default function Menu() {
-  const clearCanvas = useComponentStore((state) => state.clearCanvas);
+  const clearCanvas = useStore((state) => state.clearCanvas);
 
   return (
     <DropdownMenu>

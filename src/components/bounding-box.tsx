@@ -1,14 +1,12 @@
-import useComponentStore from "@/stores/component.store";
 import useDraggable from "@/hooks/useDraggable.ts";
 import { Box } from "@air/react-drag-to-select";
+import useStore from "@/stores";
 
 export default function BoundingBox() {
-  const boundingBox = useComponentStore((state) => state.boundingBox);
-  const setBoundingBox = useComponentStore((state) => state.setBoundingBox);
-  const updateComponents = useComponentStore((state) => state.updateComponents);
-  const selectedComponents = useComponentStore((state) =>
-    state.getSelectedComponents(),
-  );
+  const boundingBox = useStore((state) => state.boundingBox);
+  const setBoundingBox = useStore((state) => state.setBoundingBox);
+  const updateComponents = useStore((state) => state.updateComponents);
+  const selectedComponents = useStore((state) => state.getSelectedComponents());
 
   const { ref, getCurrentPosition, onDrag } = useDraggable({
     onDragEnd: () => {

@@ -1,4 +1,3 @@
-import useComponentStore from "@/stores/component.store";
 import {
   Box,
   boxesIntersect,
@@ -6,11 +5,12 @@ import {
 } from "@air/react-drag-to-select";
 import { useState } from "react";
 import { createBoundingBox } from "@/utils";
+import useStore from "@/stores";
 
 export default function DragSelection() {
-  const components = useComponentStore((state) => state.components);
-  const updateComponents = useComponentStore((state) => state.updateComponents);
-  const setBoundingBox = useComponentStore((state) => state.setBoundingBox);
+  const components = useStore((state) => state.components);
+  const updateComponents = useStore((state) => state.updateComponents);
+  const setBoundingBox = useStore((state) => state.setBoundingBox);
 
   const [selectionBox, setSelectionBox] = useState<Box | null>(null);
 

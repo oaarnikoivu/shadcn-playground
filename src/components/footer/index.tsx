@@ -1,12 +1,10 @@
 import { Button } from "@/components/ui/button.tsx";
 import { HelpCircle } from "lucide-react";
 import { Input } from "@/components/ui/input.tsx";
-import useComponentStore from "@/stores/component.store.ts";
+import useStore from "@/stores";
 
 export default function Footer() {
-  const selectedComponents = useComponentStore((state) =>
-    state.getSelectedComponents(),
-  );
+  const selectedComponents = useStore((state) => state.getSelectedComponents());
 
   return (
     <footer className="flex items-center justify-between w-screen px-4 fixed h-header bottom-0">

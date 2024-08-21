@@ -3,15 +3,15 @@ import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group.tsx";
 import { BUTTON_SIZES, BUTTON_VARIANTS } from "@/constants.ts";
 import { VariantProps } from "class-variance-authority";
 import { Button } from "@/components/ui/button.tsx";
-import useComponentStore from "@/stores/component.store.ts";
 import Actions from "@/components/editor/actions.tsx";
 import Align from "@/components/editor/align.tsx";
+import useStore from "@/stores";
 
 export default function ButtonProperties() {
-  const componentsToUpdate = useComponentStore((state) =>
+  const componentsToUpdate = useStore((state) =>
     state.getSelectedComponents(),
   ).filter((c) => c.selected && c.type === "button");
-  const updateComponents = useComponentStore((state) => state.updateComponents);
+  const updateComponents = useStore((state) => state.updateComponents);
 
   const handleSizeChange = (value: string) => {
     updateComponents(

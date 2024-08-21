@@ -1,22 +1,22 @@
 import { Label } from "@/components/ui/label.tsx";
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group.tsx";
 import { Copy, Trash2 } from "lucide-react";
-import useComponentStore from "@/stores/component.store.ts";
 import {
   Tooltip,
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip.tsx";
+import useStore from "@/stores";
 
 const ACTIONS = ["copy", "delete"] as const;
 
 export default function Actions() {
-  const componentsToUpdate = useComponentStore((state) =>
+  const componentsToUpdate = useStore((state) =>
     state.getSelectedComponents(),
   ).filter((c) => c.selected);
-  const copyComponents = useComponentStore((state) => state.copyComponents);
-  const removeComponents = useComponentStore((state) => state.removeComponents);
+  const copyComponents = useStore((state) => state.copyComponents);
+  const removeComponents = useStore((state) => state.removeComponents);
 
   const handleCopy = () => copyComponents(componentsToUpdate);
 

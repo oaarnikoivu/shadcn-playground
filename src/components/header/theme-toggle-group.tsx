@@ -1,4 +1,3 @@
-import useThemeStore from "@/stores/theme.store.ts";
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group.tsx";
 import {
   Tooltip,
@@ -8,10 +7,11 @@ import {
 } from "@/components/ui/tooltip.tsx";
 import { THEMES } from "@/constants.ts";
 import { Monitor, Moon, Sun } from "lucide-react";
+import useStore from "@/stores";
 
 export default function ThemeToggleGroup() {
-  const theme = useThemeStore((state) => state.theme);
-  const setTheme = useThemeStore((state) => state.setTheme);
+  const theme = useStore((state) => state.theme);
+  const setTheme = useStore((state) => state.setTheme);
 
   return (
     <ToggleGroup

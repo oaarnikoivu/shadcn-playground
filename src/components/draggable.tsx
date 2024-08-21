@@ -1,22 +1,20 @@
 import useDraggable from "@/hooks/useDraggable";
 import { cn } from "@/lib/utils";
-import useComponentStore from "@/stores/component.store";
 import { PlaygroundUIComponent } from "@/types/component";
 import { useEffect } from "react";
 import { Button } from "./ui/button";
 import { Input } from "./ui/input";
+import useStore from "@/stores";
 
 type DraggableProps = {
   component: PlaygroundUIComponent;
 };
 
 export default function Draggable({ component }: DraggableProps) {
-  const setBoundingBox = useComponentStore((state) => state.setBoundingBox);
-  const updateComponent = useComponentStore((state) => state.updateComponent);
-  const updateComponents = useComponentStore((state) => state.updateComponents);
-  const selectedComponents = useComponentStore((state) =>
-    state.getSelectedComponents(),
-  );
+  const setBoundingBox = useStore((state) => state.setBoundingBox);
+  const updateComponent = useStore((state) => state.updateComponent);
+  const updateComponents = useStore((state) => state.updateComponents);
+  const selectedComponents = useStore((state) => state.getSelectedComponents());
 
   const { ref, getCurrentPosition, onDrag } = useDraggable({
     initialCoordinates: component.coordinates,
