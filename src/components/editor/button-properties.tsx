@@ -1,12 +1,10 @@
-import { Label } from "@/components/ui/label.tsx";
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group.tsx";
 import { BUTTON_SIZES, BUTTON_VARIANTS } from "@/constants.ts";
 import { VariantProps } from "class-variance-authority";
 import { Button } from "@/components/ui/button.tsx";
-import Actions from "@/components/editor/actions.tsx";
-import Align from "@/components/editor/align.tsx";
 import useStore from "@/stores";
-import Value from "@/components/editor/value.tsx";
+import { ButtonProperties as TButtonProperties } from "@/types/component.ts";
+import Section from "@/components/editor/section.tsx";
 
 export default function ButtonProperties() {
   const componentsToUpdate = useStore((state) =>
@@ -40,14 +38,14 @@ export default function ButtonProperties() {
 
   return (
     <>
-      <Value />
-      <div className="space-y-1">
-        <Label className="font-semibold">Size</Label>
+      <Section title="Size">
         <ToggleGroup
           type="single"
           value={
             componentsToUpdate.length === 1
-              ? String(componentsToUpdate[0].properties.size)
+              ? String(
+                  (componentsToUpdate[0].properties as TButtonProperties).size,
+                )
               : undefined
           }
           className="justify-start"
@@ -63,14 +61,16 @@ export default function ButtonProperties() {
             </ToggleGroupItem>
           ))}
         </ToggleGroup>
-      </div>
-      <div className="space-y-1">
-        <Label className="font-semibold">Variant</Label>
+      </Section>
+      <Section title="Variant">
         <ToggleGroup
           type="single"
           value={
             componentsToUpdate.length === 1
-              ? String(componentsToUpdate[0].properties.variant)
+              ? String(
+                  (componentsToUpdate[0].properties as TButtonProperties)
+                    .variant,
+                )
               : undefined
           }
           className="justify-start flex-wrap"
@@ -86,9 +86,7 @@ export default function ButtonProperties() {
             </ToggleGroupItem>
           ))}
         </ToggleGroup>
-      </div>
-      <Align />
-      <Actions />
+      </Section>
     </>
   );
 }

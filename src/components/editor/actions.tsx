@@ -1,4 +1,3 @@
-import { Label } from "@/components/ui/label.tsx";
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group.tsx";
 import { Copy, Trash2 } from "lucide-react";
 import {
@@ -8,6 +7,7 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip.tsx";
 import useStore from "@/stores";
+import Section from "@/components/editor/section.tsx";
 
 const ACTIONS = ["copy", "delete"] as const;
 
@@ -23,8 +23,7 @@ export default function Actions() {
   const handleDelete = () => removeComponents(componentsToUpdate);
 
   return (
-    <div className="space-y-1">
-      <Label className="font-semibold">Actions</Label>
+    <Section title="Actions">
       <ToggleGroup type="single" className="justify-start">
         <TooltipProvider>
           {ACTIONS.map((action) => (
@@ -47,6 +46,6 @@ export default function Actions() {
           ))}
         </TooltipProvider>
       </ToggleGroup>
-    </div>
+    </Section>
   );
 }

@@ -1,9 +1,17 @@
 import { Popover, PopoverContent } from "@/components/ui/popover.tsx";
 import ButtonProperties from "@/components/editor/button-properties.tsx";
 import useStore from "@/stores";
+import Value from "@/components/editor/value.tsx";
+import Align from "@/components/editor/align.tsx";
+import Actions from "@/components/editor/actions.tsx";
+import InputProperties from "@/components/editor/input-properties.tsx";
 
 export default function Editor() {
   const selectedComponents = useStore((state) => state.getSelectedComponents());
+
+  const uniqueComponentTypes = Array.from(
+    new Set(selectedComponents.map((c) => c.type)),
+  );
 
   return (
     <Popover open={selectedComponents.length > 0}>
@@ -14,7 +22,11 @@ export default function Editor() {
         asChild
       >
         <div className="flex flex-col gap-2">
-          <ButtonProperties />
+          <Value />
+          {uniqueComponentTypes.includes("button") && <ButtonProperties />}
+          {uniqueComponentTypes.includes("input") && <InputProperties />}
+          <Align />
+          <Actions />
         </div>
       </PopoverContent>
     </Popover>

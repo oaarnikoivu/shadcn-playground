@@ -7,19 +7,27 @@ export type Coordinate = {
   y: number;
 };
 
-type CommonProperties = {
+interface CommonProperties {
   value: string;
-};
+  width?: number;
+  height?: number;
+}
 
-export type ButtonProperties = {
+export interface ButtonProperties extends CommonProperties {
   size: VariantProps<typeof Button>["size"];
   variant: VariantProps<typeof Button>["variant"];
-} & CommonProperties;
+}
+
+export interface InputProperties extends CommonProperties {
+  placeholder?: string;
+}
+
+type Properties = ButtonProperties | InputProperties;
 
 export type PlaygroundUIComponent = {
   id: string;
   type: (typeof SUPPORTED_COMPONENTS)[number];
   coordinates: Coordinate;
-  properties: ButtonProperties;
+  properties: Properties;
   selected?: boolean;
 };

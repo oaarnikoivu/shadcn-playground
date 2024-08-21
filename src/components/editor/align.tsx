@@ -1,8 +1,8 @@
 import { AlignCenterHorizontal, AlignCenterVertical } from "lucide-react";
-import { Label } from "@/components/ui/label.tsx";
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group.tsx";
 import { alignCenterHorizontal, alignCenterVertical } from "@/utils";
 import useStore from "@/stores";
+import Section from "@/components/editor/section.tsx";
 
 const AlignOptions = {
   "align-center-horizontal": AlignCenterHorizontal,
@@ -34,8 +34,7 @@ export default function Align() {
   if (!boundingBox) return null;
 
   return (
-    <div className="space-y-1">
-      <Label className="font-semibold">Align</Label>
+    <Section title="Align">
       <ToggleGroup type="single" className="justify-start">
         {Object.entries(AlignOptions).map(([key, Icon]) => (
           <ToggleGroupItem
@@ -48,6 +47,6 @@ export default function Align() {
           </ToggleGroupItem>
         ))}
       </ToggleGroup>
-    </div>
+    </Section>
   );
 }

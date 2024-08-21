@@ -1,20 +1,25 @@
 import useDraggable from "@/hooks/useDraggable";
 import { cn } from "@/lib/utils";
-import { PlaygroundUIComponent } from "@/types/component";
-import { useEffect } from "react";
+import {
+  ButtonProperties,
+  InputProperties,
+  PlaygroundUIComponent,
+} from "@/types/component";
 import { Button } from "./ui/button";
 import { Input } from "./ui/input";
 import useStore from "@/stores";
+import useClickOutsideDraggable from "@/hooks/useClickOutsideDraggable.ts";
 
 type DraggableProps = {
   component: PlaygroundUIComponent;
 };
 
 export default function Draggable({ component }: DraggableProps) {
-  const setBoundingBox = useStore((state) => state.setBoundingBox);
   const updateComponent = useStore((state) => state.updateComponent);
   const updateComponents = useStore((state) => state.updateComponents);
   const selectedComponents = useStore((state) => state.getSelectedComponents());
+
+  useClickOutsideDraggable(component);
 
   const { ref, getCurrentPosition, onDrag } = useDraggable({
     initialCoordinates: component.coordinates,
@@ -37,49 +42,31 @@ export default function Draggable({ component }: DraggableProps) {
 
   const renderComponent = () => {
     switch (component.type) {
-      case "button":
+      case "button": {
+        const properties = component.properties as ButtonProperties;
         return (
-          <Button
-            variant={component.properties.variant}
-            size={component.properties.size}
-          >
+          <Button variant={properties.variant} size={properties.size}>
             {component.properties.value}
           </Button>
         );
-      case "input":
-        return <Input className="focus-visible:outline-none" />;
+      }
+      case "input": {
+        const properties = component.properties as InputProperties;
+        return (
+          <Input
+            placeholder={properties.placeholder ?? ""}
+            value={properties.value}
+            style={{
+              width: properties.width && `${properties.width}px`,
+              height: properties.height && `${properties.height}px`,
+            }}
+          />
+        );
+      }
       default:
         return <></>;
     }
   };
-
-  useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      const target = event.target as HTMLElement;
-
-      const isMenuOpen = !!document.getElementById("menu");
-      const isInsideEditor = target.closest("#editor");
-
-      if (
-        target.id !== component.id &&
-        target.id !== "bbox" &&
-        target.id !== "menu" &&
-        target.id !== "prompt" &&
-        !isMenuOpen &&
-        !isInsideEditor &&
-        component?.selected
-      ) {
-        updateComponent({ ...component, selected: false });
-        setBoundingBox(null);
-      }
-    };
-
-    document.addEventListener("mousedown", handleClickOutside);
-
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
-  }, [component, setBoundingBox, updateComponent]);
 
   return (
     <div
