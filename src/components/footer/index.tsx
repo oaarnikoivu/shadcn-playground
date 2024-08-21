@@ -2,6 +2,7 @@ import { Button } from "@/components/ui/button.tsx";
 import { HelpCircle } from "lucide-react";
 import { Input } from "@/components/ui/input.tsx";
 import useStore from "@/stores";
+import { createShareableLink } from "@/utils/createShareableLink.ts";
 
 export default function Footer() {
   const selectedComponents = useStore((state) => state.getSelectedComponents());
@@ -13,7 +14,13 @@ export default function Footer() {
         <Input id="prompt" className="w-[40%]" placeholder="Prompt..." />
       )}
       <Button variant="secondary" size="icon">
-        <HelpCircle className="size-4" />
+        <HelpCircle
+          className="size-4"
+          onClick={() => {
+            const link = createShareableLink();
+            console.log(link);
+          }}
+        />
       </Button>
     </footer>
   );

@@ -1,8 +1,9 @@
 import { AlignCenterHorizontal, AlignCenterVertical } from "lucide-react";
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group.tsx";
-import { alignCenterHorizontal, alignCenterVertical } from "@/utils";
+
 import useStore from "@/stores";
 import Section from "@/components/editor/section.tsx";
+import { alignCenterHorizontal, alignCenterVertical } from "@/utils/align.ts";
 
 const AlignOptions = {
   "align-center-horizontal": AlignCenterHorizontal,

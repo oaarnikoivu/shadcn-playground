@@ -5,8 +5,10 @@ import Editor from "@/components/editor";
 import Footer from "@/components/footer";
 import useTheme from "@/hooks/useTheme.ts";
 import Canvas from "@/components/canvas.tsx";
+import useInitializeStoreFromLink from "@/hooks/useInitializeStoreFromLink.ts";
 
 function App() {
+  useInitializeStoreFromLink();
   useTheme();
 
   return (

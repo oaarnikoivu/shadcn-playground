@@ -4,8 +4,8 @@ import {
   useSelectionContainer,
 } from "@air/react-drag-to-select";
 import { useState } from "react";
-import { createBoundingBox } from "@/utils";
 import useStore from "@/stores";
+import createBoundingBox from "@/utils/createBoundingBox.ts";
 
 export default function DragSelection() {
   const components = useStore((state) => state.components);
