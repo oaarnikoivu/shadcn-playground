@@ -6,6 +6,8 @@ import Footer from "@/components/footer";
 import useTheme from "@/hooks/useTheme.ts";
 import Canvas from "@/components/canvas.tsx";
 import useInitializeStoreFromLink from "@/hooks/useInitializeStoreFromLink.ts";
+import { Toaster } from "@/components/ui/sonner.tsx";
+import { CheckCircle2 } from "lucide-react";
 
 function App() {
   useInitializeStoreFromLink();
@@ -19,6 +21,18 @@ function App() {
       <BoundingBox />
       <Canvas />
       <Footer />
+      <Toaster
+        toastOptions={{
+          classNames: {
+            success:
+              "bg-teal-100 border border-teal-200 shadow-sm text-teal-700",
+            description: "text-teal-600",
+          },
+        }}
+        icons={{
+          success: <CheckCircle2 className="size-4" />,
+        }}
+      />
     </>
   );
 }
