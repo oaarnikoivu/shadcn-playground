@@ -1,7 +1,7 @@
 import useStore from "@/stores";
 import { Label } from "@/components/ui/label.tsx";
 import { Input } from "@/components/ui/input.tsx";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 
 export default function Value() {
   const componentsToUpdate = useStore((state) =>
@@ -9,24 +9,22 @@ export default function Value() {
   ).filter((c) => c.selected);
   const updateComponents = useStore((state) => state.updateComponents);
 
-  const [value, setValue] = useState("");
-
-  useEffect(() => {
-    if (componentsToUpdate.length === 1) {
-      setValue(componentsToUpdate[0].properties.value);
-    }
-  }, [componentsToUpdate]);
+  const [value, setValue] = useState(
+    componentsToUpdate.length === 1
+      ? componentsToUpdate[0].properties.value
+      : "",
+  );
 
   const handleValueChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const value = event.target.value;
-    setValue(value);
+    const newValue = event.target.value;
+    setValue(newValue);
 
     updateComponents(
       componentsToUpdate.map((c) => ({
         ...c,
         properties: {
           ...c.properties,
-          value,
+          value: newValue,
         },
       })),
     );
