@@ -5,12 +5,48 @@ import { Button } from "@/components/ui/button.tsx";
 import useStore from "@/stores";
 import { ButtonProperties as TButtonProperties } from "@/types/component.ts";
 import Section from "@/components/editor/section.tsx";
+import { useMemo } from "react";
 
 export default function ButtonProperties() {
   const componentsToUpdate = useStore((state) =>
     state.getSelectedComponents(),
   ).filter((c) => c.selected && c.type === "button");
   const updateComponents = useStore((state) => state.updateComponents);
+
+  const size = useMemo(() => {
+    if (!componentsToUpdate.length) return "";
+
+    const firstComponentSize = (
+      componentsToUpdate[0].properties as TButtonProperties
+    ).size;
+
+    if (componentsToUpdate.length > 1) {
+      const isSameSize = componentsToUpdate.every(
+        (c) => (c.properties as TButtonProperties).size === firstComponentSize,
+      );
+      return isSameSize ? firstComponentSize : undefined;
+    }
+
+    return firstComponentSize;
+  }, [componentsToUpdate]);
+
+  const variant = useMemo(() => {
+    if (!componentsToUpdate.length) return "";
+
+    const firstComponentVariant = (
+      componentsToUpdate[0].properties as TButtonProperties
+    ).variant;
+
+    if (componentsToUpdate.length > 1) {
+      const isSameVariant = componentsToUpdate.every(
+        (c) =>
+          (c.properties as TButtonProperties).variant === firstComponentVariant,
+      );
+      return isSameVariant ? firstComponentVariant : undefined;
+    }
+
+    return firstComponentVariant;
+  }, [componentsToUpdate]);
 
   const handleSizeChange = (value: string) => {
     updateComponents(
@@ -41,13 +77,7 @@ export default function ButtonProperties() {
       <Section title="Size">
         <ToggleGroup
           type="single"
-          value={
-            componentsToUpdate.length === 1
-              ? String(
-                  (componentsToUpdate[0].properties as TButtonProperties).size,
-                )
-              : undefined
-          }
+          value={String(size)}
           className="justify-start"
         >
           {Object.entries(BUTTON_SIZES).map(([key, value]) => (
@@ -65,14 +95,7 @@ export default function ButtonProperties() {
       <Section title="Variant">
         <ToggleGroup
           type="single"
-          value={
-            componentsToUpdate.length === 1
-              ? String(
-                  (componentsToUpdate[0].properties as TButtonProperties)
-                    .variant,
-                )
-              : undefined
-          }
+          value={String(variant)}
           className="justify-start flex-wrap"
         >
           {Object.entries(BUTTON_VARIANTS).map(([key, value]) => (

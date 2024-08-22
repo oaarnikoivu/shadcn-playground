@@ -10,25 +10,33 @@ export default function Size() {
   const updateComponents = useStore((state) => state.updateComponents);
 
   const width = useMemo(() => {
+    if (!componentsToUpdate.length) return "";
+
+    const firstComponentWidth = componentsToUpdate[0].properties.width ?? "";
+
     if (componentsToUpdate.length > 1) {
-      const firstComponentWidth = componentsToUpdate[0].properties.width;
       const allWidthsAreEqual = componentsToUpdate.every(
         (c) => c.properties.width === firstComponentWidth,
       );
       return allWidthsAreEqual ? firstComponentWidth : "";
     }
-    return componentsToUpdate[0].properties.width;
+
+    return firstComponentWidth;
   }, [componentsToUpdate]);
 
   const height = useMemo(() => {
+    if (!componentsToUpdate.length) return "";
+
+    const firstComponentHeight = componentsToUpdate[0].properties.height ?? "";
+
     if (componentsToUpdate.length > 1) {
-      const firstComponentHeight = componentsToUpdate[0].properties.height;
       const allHeightsAreEqual = componentsToUpdate.every(
         (c) => c.properties.height === firstComponentHeight,
       );
       return allHeightsAreEqual ? firstComponentHeight : "";
     }
-    return componentsToUpdate[0].properties.height;
+
+    return firstComponentHeight;
   }, [componentsToUpdate]);
 
   const handleWidthChange = (e: React.ChangeEvent<HTMLInputElement>) => {
