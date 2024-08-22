@@ -6,15 +6,20 @@ export function horizontalSpacing(
 ) {
   let previousX = null;
 
-  for (let i = 1; i < components.length; i++) {
-    const prevComponent = components[i - 1];
+  // sort components by x coordinate
+  const sortedComponents = components.sort(
+    (a, b) => a.coordinates.x - b.coordinates.x,
+  );
+
+  for (let i = 1; i < sortedComponents.length; i++) {
+    const prevComponent = sortedComponents[i - 1];
     const prevComponentElement = document.getElementById(prevComponent.id);
 
     if (!prevComponentElement) {
       console.error(
         `Failed to get bounding rect for component at index ${i - 1}`,
       );
-      return components;
+      return sortedComponents;
     }
 
     const prevComponentRect = prevComponentElement.getBoundingClientRect();
@@ -23,8 +28,8 @@ export function horizontalSpacing(
       newX = previousX + prevComponentRect.width + amount;
     }
     previousX = newX;
-    components[i].coordinates.x = newX;
+    sortedComponents[i].coordinates.x = newX;
   }
 
-  return components;
+  return sortedComponents;
 }
