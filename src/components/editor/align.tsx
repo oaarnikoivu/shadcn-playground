@@ -32,7 +32,7 @@ export default function Align() {
     }
   };
 
-  if (!boundingBox) return null;
+  if (!boundingBox || selectedComponents.length === 1) return null;
 
   return (
     <Section title="Align">
