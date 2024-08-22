@@ -1,6 +1,6 @@
 import { Input } from "@/components/ui/input.tsx";
 import useStore from "@/stores";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import Section from "@/components/editor/section.tsx";
 
 export default function Size() {
@@ -9,35 +9,41 @@ export default function Size() {
   ).filter((c) => c.type === "input");
   const updateComponents = useStore((state) => state.updateComponents);
 
-  const width =
-    componentsToUpdate.length === 1
-      ? componentsToUpdate[0].properties.width
-      : "";
+  const [width, setWidth] = useState<number | undefined>(undefined);
+  const [height, setHeight] = useState<number | undefined>(undefined);
 
-  const height =
-    componentsToUpdate.length === 1
-      ? componentsToUpdate[0].properties.height
-      : "";
+  useEffect(() => {
+    if (componentsToUpdate.length === 1) {
+      setWidth(componentsToUpdate[0].properties.width);
+      setHeight(componentsToUpdate[0].properties.height);
+    }
+  }, [componentsToUpdate]);
 
   const handleWidthChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value as unknown as number;
+    setWidth(value);
+
     updateComponents(
       componentsToUpdate.map((c) => ({
         ...c,
         properties: {
           ...c.properties,
-          width: e.currentTarget.value as unknown as number,
+          width: value,
         },
       })),
     );
   };
 
   const handleHeightChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value as unknown as number;
+    setHeight(value);
+
     updateComponents(
       componentsToUpdate.map((c) => ({
         ...c,
         properties: {
           ...c.properties,
-          height: e.currentTarget.value as unknown as number,
+          height: height,
         },
       })),
     );

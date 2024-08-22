@@ -1,7 +1,7 @@
 import useStore from "@/stores";
 import { Label } from "@/components/ui/label.tsx";
 import { Input } from "@/components/ui/input.tsx";
-import React from "react";
+import React, { useEffect, useState } from "react";
 
 export default function Value() {
   const componentsToUpdate = useStore((state) =>
@@ -9,19 +9,24 @@ export default function Value() {
   ).filter((c) => c.selected);
   const updateComponents = useStore((state) => state.updateComponents);
 
-  const currentValue =
-    componentsToUpdate.length === 1
-      ? componentsToUpdate[0].properties.value
-      : "";
+  const [value, setValue] = useState("");
+
+  useEffect(() => {
+    if (componentsToUpdate.length === 1) {
+      setValue(componentsToUpdate[0].properties.value);
+    }
+  }, [componentsToUpdate]);
 
   const handleValueChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const value = event.currentTarget.value;
+    const value = event.target.value;
+    setValue(value);
+
     updateComponents(
       componentsToUpdate.map((c) => ({
         ...c,
         properties: {
           ...c.properties,
-          value: value,
+          value,
         },
       })),
     );
@@ -30,7 +35,7 @@ export default function Value() {
   return (
     <div className="space-y-1">
       <Label className="font-semibold">Value</Label>
-      <Input value={currentValue} onChange={handleValueChange} />
+      <Input value={value} onChange={handleValueChange} />
     </div>
   );
 }
