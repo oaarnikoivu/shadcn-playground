@@ -1,6 +1,6 @@
 import { Input } from "@/components/ui/input.tsx";
 import useStore from "@/stores";
-import React, { useState } from "react";
+import React, { useMemo } from "react";
 import Section from "@/components/editor/section.tsx";
 
 export default function Size() {
@@ -9,21 +9,30 @@ export default function Size() {
   ).filter((c) => c.type === "input");
   const updateComponents = useStore((state) => state.updateComponents);
 
-  const [width, setWidth] = useState(
-    componentsToUpdate.length === 1
-      ? componentsToUpdate[0].properties.width
-      : undefined,
-  );
+  const width = useMemo(() => {
+    if (componentsToUpdate.length > 1) {
+      const firstComponentWidth = componentsToUpdate[0].properties.width;
+      const allWidthsAreEqual = componentsToUpdate.every(
+        (c) => c.properties.width === firstComponentWidth,
+      );
+      return allWidthsAreEqual ? firstComponentWidth : "";
+    }
+    return componentsToUpdate[0].properties.width;
+  }, [componentsToUpdate]);
 
-  const [height, setHeight] = useState(
-    componentsToUpdate.length === 1
-      ? componentsToUpdate[0].properties.height
-      : undefined,
-  );
+  const height = useMemo(() => {
+    if (componentsToUpdate.length > 1) {
+      const firstComponentHeight = componentsToUpdate[0].properties.height;
+      const allHeightsAreEqual = componentsToUpdate.every(
+        (c) => c.properties.height === firstComponentHeight,
+      );
+      return allHeightsAreEqual ? firstComponentHeight : "";
+    }
+    return componentsToUpdate[0].properties.height;
+  }, [componentsToUpdate]);
 
   const handleWidthChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newWidth = e.target.value as unknown as number;
-    setWidth(newWidth);
 
     updateComponents(
       componentsToUpdate.map((c) => ({
@@ -38,7 +47,6 @@ export default function Size() {
 
   const handleHeightChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newHeight = e.target.value as unknown as number;
-    setHeight(newHeight);
 
     updateComponents(
       componentsToUpdate.map((c) => ({
