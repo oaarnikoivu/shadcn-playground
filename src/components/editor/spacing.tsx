@@ -3,30 +3,77 @@ import useStore from "@/stores";
 import { Input } from "@/components/ui/input.tsx";
 import { Label } from "@/components/ui/label.tsx";
 import React from "react";
-import { horizontalSpacing, verticalSpacing } from "@/utils/spacing.ts";
+import {
+  horizontalSpacing,
+  horizontalSpacingContainerWidth,
+  verticalSpacing,
+  verticalSpacingContainerHeight,
+} from "@/utils/spacing.ts";
 
 const spacingTypes = ["horizontal", "vertical"] as const;
 
 export default function Spacing() {
   const componentsToUpdate = useStore((state) => state.getSelectedComponents());
   const updateComponents = useStore((state) => state.updateComponents);
+  const boundingBox = useStore((state) => state.boundingBox);
+  const setBoundingBox = useStore((state) => state.setBoundingBox);
 
   const handleHorizontalSpacingChange = (
     e: React.ChangeEvent<HTMLInputElement>,
   ) => {
-    const spacing = parseFloat(e.currentTarget.value);
+    const spacing = parseFloat(e.target.value);
     if (isNaN(spacing)) return;
 
-    updateComponents(horizontalSpacing(spacing, componentsToUpdate));
+    const spacedComponents = horizontalSpacing(
+      spacing,
+      componentsToUpdate.map((c) => ({
+        ...c,
+        coordinates: { ...c.coordinates },
+      })),
+    );
+
+    const totalWidth = horizontalSpacingContainerWidth(
+      spacedComponents,
+      spacing,
+    );
+
+    if (boundingBox && totalWidth) {
+      setBoundingBox({
+        ...boundingBox,
+        width: totalWidth,
+      });
+    }
+
+    updateComponents(spacedComponents);
   };
 
   const handleVerticalSpacingChange = (
     e: React.ChangeEvent<HTMLInputElement>,
   ) => {
-    const spacing = parseFloat(e.currentTarget.value);
+    const spacing = parseFloat(e.target.value);
     if (isNaN(spacing)) return;
 
-    updateComponents(verticalSpacing(spacing, componentsToUpdate));
+    const spacedComponents = verticalSpacing(
+      spacing,
+      componentsToUpdate.map((c) => ({
+        ...c,
+        coordinates: { ...c.coordinates },
+      })),
+    );
+
+    const totalHeight = verticalSpacingContainerHeight(
+      spacedComponents,
+      spacing,
+    );
+
+    if (boundingBox && totalHeight) {
+      setBoundingBox({
+        ...boundingBox,
+        height: totalHeight,
+      });
+    }
+
+    updateComponents(spacedComponents);
   };
 
   if (componentsToUpdate.length <= 1) return null;
