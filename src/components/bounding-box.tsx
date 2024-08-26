@@ -1,7 +1,5 @@
 import { DndContext, DragEndEvent, useDraggable } from "@dnd-kit/core";
 import { useComponentActions, useSelected, useStore } from "@/stores";
-import useInitializeStoreFromLink from "@/hooks/useInitializeStoreFromLink.ts";
-import useTheme from "@/hooks/useTheme.ts";
 import { Box } from "@air/react-drag-to-select";
 import { useEffect, useRef, useState } from "react";
 import createBoundingBox from "@/utils/createBoundingBox.ts";
@@ -9,9 +7,6 @@ import createBoundingBox from "@/utils/createBoundingBox.ts";
 export default function BoundingBox() {
   const selectedComponents = useSelected();
   const { updateCoordinates } = useComponentActions();
-
-  useInitializeStoreFromLink();
-  useTheme();
 
   const handleDragEnd = ({ delta }: DragEndEvent) => {
     if (!delta.x && !delta.y) return;

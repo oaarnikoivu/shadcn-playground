@@ -6,8 +6,13 @@ import Footer from "@/components/footer";
 import Canvas from "@/components/canvas.tsx";
 import { Toaster } from "@/components/ui/sonner.tsx";
 import { CheckCircle2 } from "lucide-react";
+import useInitializeStoreFromLink from "@/hooks/useInitializeStoreFromLink.ts";
+import useTheme from "@/hooks/useTheme.ts";
 
 function App() {
+  useInitializeStoreFromLink();
+  useTheme();
+
   return (
     <>
       <Header />
