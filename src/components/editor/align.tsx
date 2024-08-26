@@ -1,7 +1,6 @@
 import { AlignCenterHorizontal, AlignCenterVertical } from "lucide-react";
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group.tsx";
-
-import useStore from "@/stores";
+import { useComponentActions, useSelected } from "@/stores";
 import Section from "@/components/editor/section.tsx";
 import { alignCenterHorizontal, alignCenterVertical } from "@/utils/align.ts";
 
@@ -11,28 +10,31 @@ const AlignOptions = {
 };
 
 export default function Align() {
-  const boundingBox = useStore((state) => state.boundingBox);
-  const selectedComponents = useStore((state) => state.getSelectedComponents());
-  const updateComponents = useStore((state) => state.updateComponents);
+  const selectedComponents = useSelected();
+  const { updateCoordinates } = useComponentActions();
 
   const handleAlign = (key: keyof typeof AlignOptions) => {
-    if (!boundingBox) return;
-
     switch (key) {
-      case "align-center-horizontal":
-        updateComponents(
-          alignCenterHorizontal(boundingBox, selectedComponents),
-        );
+      case "align-center-horizontal": {
+        const alignedComponents = alignCenterHorizontal(selectedComponents);
+        alignedComponents.forEach((c) => {
+          updateCoordinates(c.id, { x: c.coordinates.x, y: c.coordinates.y });
+        });
         break;
-      case "align-center-vertical":
-        updateComponents(alignCenterVertical(boundingBox, selectedComponents));
+      }
+      case "align-center-vertical": {
+        const alignedComponents = alignCenterVertical(selectedComponents);
+        alignedComponents.forEach((c) => {
+          updateCoordinates(c.id, { x: c.coordinates.x, y: c.coordinates.y });
+        });
         break;
+      }
       default:
         break;
     }
   };
 
-  if (!boundingBox || selectedComponents.length === 1) return null;
+  if (selectedComponents.length === 1) return null;
 
   return (
     <Section title="Align">

@@ -22,7 +22,7 @@ export interface InputProperties extends CommonProperties {
   placeholder?: string;
 }
 
-type Properties = ButtonProperties | InputProperties;
+export type Properties = ButtonProperties | InputProperties;
 
 export type PlaygroundUIComponent = {
   id: string;

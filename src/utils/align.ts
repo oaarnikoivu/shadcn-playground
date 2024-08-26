@@ -1,10 +1,8 @@
-import { Box } from "@air/react-drag-to-select";
 import { PlaygroundUIComponent } from "@/types/component.ts";
+import createBoundingBox from "@/utils/createBoundingBox.ts";
 
-export function alignCenterHorizontal(
-  boundingBox: Box,
-  components: PlaygroundUIComponent[],
-) {
+export function alignCenterHorizontal(components: PlaygroundUIComponent[]) {
+  const boundingBox = createBoundingBox(components);
   const bboxCenterY = boundingBox.top + boundingBox.height / 2;
 
   return components.map((c) => {
@@ -27,10 +25,8 @@ export function alignCenterHorizontal(
   });
 }
 
-export function alignCenterVertical(
-  boundingBox: Box,
-  components: PlaygroundUIComponent[],
-) {
+export function alignCenterVertical(components: PlaygroundUIComponent[]) {
+  const boundingBox = createBoundingBox(components);
   const bboxCenterX = boundingBox.left + boundingBox.width / 2;
 
   return components.map((c) => {

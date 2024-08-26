@@ -1,20 +1,22 @@
-import { PlaygroundUIComponent } from "@/types/component";
-import { Box } from "@air/react-drag-to-select";
+import { PlaygroundUIComponent, Properties } from "@/types/component";
 import { StateCreator } from "zustand";
 
 export type ComponentSlice = {
   components: PlaygroundUIComponent[];
-  boundingBox: Box | null;
-  setBoundingBox: (box: Box | null) => void;
-  getSelectedComponents: () => PlaygroundUIComponent[];
-  addComponent: (component: PlaygroundUIComponent) => void;
-  copyComponents: (components: PlaygroundUIComponent[]) => void;
-  removeComponent: (component: PlaygroundUIComponent) => void;
-  removeComponents: (components: PlaygroundUIComponent[]) => void;
-  updateComponent: (component: PlaygroundUIComponent) => void;
-  updateComponents: (components: PlaygroundUIComponent[]) => void;
-  selectComponents: (ids: string[]) => void;
-  clearCanvas: () => void;
+  componentActions: {
+    addComponent: (component: PlaygroundUIComponent) => void;
+    removeComponent: (id: string) => void;
+    selectComponent: (id: string) => void;
+    selectComponents: (ids: string[]) => void;
+    unselectComponent: (id: string) => void;
+    copyComponent: (id: string) => void;
+    updateCoordinates: (
+      id: string,
+      coordinates: { x: number; y: number },
+    ) => void;
+    updateProperties: (id: string, properties: Properties) => void;
+    clearComponents: () => void;
+  };
 };
 
 export const createComponentSlice: StateCreator<
@@ -24,60 +26,57 @@ export const createComponentSlice: StateCreator<
   ComponentSlice
 > = (set, get) => ({
   components: [],
-  boundingBox: null,
-  setBoundingBox: (box: Box | null) => set({ boundingBox: box }),
-  getSelectedComponents: () =>
-    get().components.filter((component) => component.selected),
-  addComponent: (component: PlaygroundUIComponent) =>
-    set((state) => ({
-      components: [...state.components, component],
-    })),
-  copyComponents: (components: PlaygroundUIComponent[]) =>
-    set((state) => ({
-      components: [
-        ...state.components,
-        ...components.map((component) => ({
-          ...component,
-          id: crypto.randomUUID(),
-          coordinates: {
-            x: component.coordinates.x + 10,
-            y: component.coordinates.y + 10,
-          },
+  componentActions: {
+    addComponent: (component) =>
+      set({ components: [...get().components, component] }),
+    removeComponent: (id: string) =>
+      set({ components: get().components.filter((c) => c.id !== id) }),
+    selectComponent: (id: string) =>
+      set((state) => ({
+        components: state.components.map((c) =>
+          c.id === id ? { ...c, selected: true } : { ...c, selected: false },
+        ),
+      })),
+    selectComponents: (ids: string[]) =>
+      set((state) => ({
+        components: state.components.map((c) => ({
+          ...c,
+          selected: ids.includes(c.id),
         })),
-      ],
-      boundingBox: null,
-    })),
-  removeComponent: (component: PlaygroundUIComponent) =>
-    set((state) => ({
-      components: state.components.filter((c) => c.id !== component.id),
-    })),
-  removeComponents: (components: PlaygroundUIComponent[]) =>
-    set((state) => ({
-      components: state.components.filter(
-        (c) => !components.map((c) => c.id).includes(c.id),
-      ),
-      boundingBox: null,
-    })),
-  updateComponent: (component: PlaygroundUIComponent) =>
-    set((state) => ({
-      components: state.components.map((c) =>
-        c.id === component.id ? { ...c, ...component } : c,
-      ),
-    })),
-  updateComponents: (updatedComponents: PlaygroundUIComponent[]) =>
-    set((state) => ({
-      components: state.components.map((component) => {
-        const update = updatedComponents.find((c) => c.id === component.id);
-        return update ? { ...component, ...update } : component;
-      }),
-    })),
-  selectComponents: (ids: string[]) =>
-    set((state) => ({
-      components: state.components.map((component) =>
-        ids.includes(component.id)
-          ? { ...component, selected: true }
-          : component,
-      ),
-    })),
-  clearCanvas: () => set({ components: [], boundingBox: null }),
+      })),
+    unselectComponent: (id: string) => {
+      set({
+        components: [
+          ...get().components.map((c) =>
+            c.id === id ? { ...c, selected: false } : c,
+          ),
+        ],
+      });
+    },
+    copyComponent: (id: string) => {
+      const component = get().components.find((c) => c.id === id);
+      if (component) {
+        set({
+          components: [
+            ...get().components,
+            { ...component, id: crypto.randomUUID() },
+          ],
+        });
+      }
+    },
+    updateCoordinates: (id: string, coordinates: { x: number; y: number }) =>
+      set((state) => ({
+        components: state.components.map((c) =>
+          c.id === id ? { ...c, coordinates } : c,
+        ),
+      })),
+    updateProperties: (id: string, properties: Properties) => {
+      set({
+        components: get().components.map((c) =>
+          c.id === id ? { ...c, properties } : c,
+        ),
+      });
+    },
+    clearComponents: () => set({ components: [] }),
+  },
 });

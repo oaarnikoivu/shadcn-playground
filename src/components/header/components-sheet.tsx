@@ -17,10 +17,10 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "../ui/sheet";
-import useStore from "@/stores";
+import { useComponentActions } from "@/stores";
 
 export default function ComponentsSheet() {
-  const addComponent = useStore((state) => state.addComponent);
+  const { addComponent } = useComponentActions();
 
   const handleSelectComponent = (componentType: string) =>
     addComponent({

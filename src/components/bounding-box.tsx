@@ -1,38 +1,66 @@
-import useDraggable from "@/hooks/useDraggable.ts";
+import { DndContext, DragEndEvent, useDraggable } from "@dnd-kit/core";
+import { useComponentActions, useSelected, useStore } from "@/stores";
 import { Box } from "@air/react-drag-to-select";
-import useStore from "@/stores";
+import { useEffect, useRef, useState } from "react";
+import createBoundingBox from "@/utils/createBoundingBox.ts";
 
 export default function BoundingBox() {
-  const boundingBox = useStore((state) => state.boundingBox);
-  const setBoundingBox = useStore((state) => state.setBoundingBox);
-  const updateComponents = useStore((state) => state.updateComponents);
-  const selectedComponents = useStore((state) => state.getSelectedComponents());
+  const selectedComponents = useSelected();
+  const { updateCoordinates } = useComponentActions();
 
-  const { ref, getCurrentPosition, onDrag } = useDraggable({
-    onDragEnd: () => {
-      const newCoordinates = getCurrentPosition();
-      const deltaX = newCoordinates.x - (boundingBox?.left ?? 0);
-      const deltaY = newCoordinates.y - (boundingBox?.top ?? 0);
+  const handleDragEnd = ({ delta }: DragEndEvent) => {
+    if (!delta.x && !delta.y) return;
 
-      const newBoundingBox: Box = {
-        width: boundingBox?.width ?? 0,
-        height: boundingBox?.height ?? 0,
-        left: newCoordinates.x,
-        top: newCoordinates.y,
-      };
+    selectedComponents.forEach((c) => {
+      updateCoordinates(c.id, {
+        x: c.coordinates.x + delta.x,
+        y: c.coordinates.y + delta.y,
+      });
+    });
+  };
 
-      updateComponents(
-        selectedComponents.map((c) => ({
-          ...c,
-          coordinates: {
-            x: c.coordinates.x + deltaX,
-            y: c.coordinates.y + deltaY,
-          },
-        })),
-      );
+  return (
+    <DndContext onDragEnd={handleDragEnd}>
+      <Draggable />
+    </DndContext>
+  );
+}
 
-      setBoundingBox(newBoundingBox);
-    },
+function Draggable() {
+  const observer = useRef<MutationObserver | null>(null);
+  const [boundingBox, setBoundingBox] = useState<Box | null>(null);
+
+  useEffect(() => {
+    const targetNode = document.getElementById("canvas");
+    if (!targetNode) return;
+
+    observer.current = new MutationObserver(() => {
+      const selectedComponents = useStore
+        .getState()
+        .components.filter((c) => c.selected);
+      if (selectedComponents.length > 0) {
+        setBoundingBox(createBoundingBox(selectedComponents));
+      } else {
+        setBoundingBox(null);
+      }
+    });
+
+    observer.current.observe(targetNode, {
+      attributes: true,
+      childList: true,
+      subtree: true,
+      characterData: true,
+    });
+
+    return () => {
+      if (observer.current) {
+        observer.current.disconnect();
+      }
+    };
+  }, []);
+
+  const { attributes, listeners, setNodeRef, transform } = useDraggable({
+    id: "bbox",
   });
 
   if (!boundingBox) return null;
@@ -40,16 +68,22 @@ export default function BoundingBox() {
   return (
     <div
       id="bbox"
-      ref={ref}
-      className="z-10 rounded-xs outline-primary outline-dashed outline-offset-8 cursor-grab"
+      ref={setNodeRef}
+      className="z-10 rounded-xs outline-primary outline-dashed outline-offset-[6px] cursor-grab"
       style={{
         position: "absolute",
-        left: `${boundingBox.left}px`,
         top: `${boundingBox.top}px`,
-        height: `${boundingBox.height}px`,
+        left: `${boundingBox.left}px`,
+        ...(transform
+          ? {
+              transform: `translate3d(${transform.x}px, ${transform.y}px, 0px)`,
+            }
+          : {}),
         width: `${boundingBox.width}px`,
+        height: `${boundingBox.height}px`,
       }}
-      onMouseDown={onDrag}
+      {...listeners}
+      {...attributes}
     />
   );
 }

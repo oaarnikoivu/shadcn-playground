@@ -1,13 +1,11 @@
 import { Input } from "@/components/ui/input.tsx";
-import useStore from "@/stores";
+import { useComponentActions, useSelectedByType } from "@/stores";
 import React, { useMemo } from "react";
 import Section from "@/components/editor/section.tsx";
 
 export default function Size() {
-  const componentsToUpdate = useStore((state) =>
-    state.getSelectedComponents(),
-  ).filter((c) => c.type === "input");
-  const updateComponents = useStore((state) => state.updateComponents);
+  const componentsToUpdate = useSelectedByType("input");
+  const { updateProperties } = useComponentActions();
 
   const width = useMemo(() => {
     if (!componentsToUpdate.length) return "";
@@ -42,29 +40,23 @@ export default function Size() {
   const handleWidthChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newWidth = e.target.value as unknown as number;
 
-    updateComponents(
-      componentsToUpdate.map((c) => ({
-        ...c,
-        properties: {
-          ...c.properties,
-          width: newWidth,
-        },
-      })),
-    );
+    componentsToUpdate.forEach((c) => {
+      updateProperties(c.id, {
+        ...c.properties,
+        width: newWidth,
+      });
+    });
   };
 
   const handleHeightChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newHeight = e.target.value as unknown as number;
 
-    updateComponents(
-      componentsToUpdate.map((c) => ({
-        ...c,
-        properties: {
-          ...c.properties,
-          height: newHeight,
-        },
-      })),
-    );
+    componentsToUpdate.forEach((c) => {
+      updateProperties(c.id, {
+        ...c.properties,
+        height: newHeight,
+      });
+    });
   };
 
   return (

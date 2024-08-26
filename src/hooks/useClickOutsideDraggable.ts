@@ -1,12 +1,11 @@
 import { useEffect } from "react";
-import useStore from "@/stores";
+import { useComponentActions } from "@/stores";
 import { PlaygroundUIComponent } from "@/types/component.ts";
 
 export default function useClickOutsideDraggable(
   component: PlaygroundUIComponent,
 ) {
-  const updateComponent = useStore((state) => state.updateComponent);
-  const setBoundingBox = useStore((state) => state.setBoundingBox);
+  const { unselectComponent } = useComponentActions();
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -24,8 +23,7 @@ export default function useClickOutsideDraggable(
         !isInsideEditor &&
         component?.selected
       ) {
-        updateComponent({ ...component, selected: false });
-        setBoundingBox(null);
+        unselectComponent(component.id);
       }
     };
 
@@ -34,5 +32,5 @@ export default function useClickOutsideDraggable(
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
-  }, [component, setBoundingBox, updateComponent]);
+  }, [component, unselectComponent]);
 }

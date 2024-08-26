@@ -1,13 +1,11 @@
-import useStore from "@/stores";
+import { useComponentActions, useSelected } from "@/stores";
 import { Label } from "@/components/ui/label.tsx";
 import { Input } from "@/components/ui/input.tsx";
 import React, { useMemo } from "react";
 
 export default function Value() {
-  const componentsToUpdate = useStore((state) =>
-    state.getSelectedComponents(),
-  ).filter((c) => c.selected);
-  const updateComponents = useStore((state) => state.updateComponents);
+  const componentsToUpdate = useSelected();
+  const { updateProperties } = useComponentActions();
 
   const value = useMemo(() => {
     if (!componentsToUpdate.length) return "";
@@ -27,15 +25,12 @@ export default function Value() {
   const handleValueChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const newValue = event.target.value;
 
-    updateComponents(
-      componentsToUpdate.map((c) => ({
-        ...c,
-        properties: {
-          ...c.properties,
-          value: newValue,
-        },
-      })),
-    );
+    componentsToUpdate.forEach((c) => {
+      updateProperties(c.id, {
+        ...c.properties,
+        value: newValue,
+      });
+    });
   };
 
   return (
