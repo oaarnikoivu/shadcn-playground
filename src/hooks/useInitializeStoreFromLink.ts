@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import useStore from "@/stores";
+import { useStore } from "@/stores";
 
 export default function useInitializeStoreFromLink() {
   useEffect(() => {

@@ -1,8 +1,8 @@
 import { useEffect } from "react";
-import useStore from "@/stores";
+import { useStoreTheme } from "@/stores";
 
 export default function useTheme() {
-  const theme = useStore((state) => state.theme);
+  const theme = useStoreTheme();
 
   useEffect(() => {
     const bodyHasDarkClass = document.body.classList.contains("dark");

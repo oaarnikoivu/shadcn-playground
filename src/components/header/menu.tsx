@@ -17,10 +17,10 @@ import {
   DropdownMenuTrigger,
 } from "../ui/dropdown-menu";
 import ThemeToggleGroup from "@/components/header/theme-toggle-group.tsx";
-import useStore from "@/stores";
+import { useComponentActions } from "@/stores";
 
 export default function Menu() {
-  const clearCanvas = useStore((state) => state.clearCanvas);
+  const { clearComponents } = useComponentActions();
 
   return (
     <DropdownMenu>
@@ -48,7 +48,7 @@ export default function Menu() {
           <HelpCircle className="size-3 mr-2" />
           Help
         </DropdownMenuItem>
-        <DropdownMenuItem onClick={clearCanvas}>
+        <DropdownMenuItem onClick={clearComponents}>
           <Trash2 className="size-3 mr-2" />
           Reset canvas
         </DropdownMenuItem>

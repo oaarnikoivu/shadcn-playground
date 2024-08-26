@@ -1,4 +1,3 @@
-import useDraggable from "@/hooks/useDraggable";
 import { cn } from "@/lib/utils";
 import {
   ButtonProperties,
@@ -7,37 +6,30 @@ import {
 } from "@/types/component";
 import { Button } from "./ui/button";
 import { Input } from "./ui/input";
-import useStore from "@/stores";
+import { useComponentActions, useComponents } from "@/stores";
 import useClickOutsideDraggable from "@/hooks/useClickOutsideDraggable.ts";
+import { useDraggable } from "@dnd-kit/core";
 
 type DraggableProps = {
   component: PlaygroundUIComponent;
 };
 
 export default function Draggable({ component }: DraggableProps) {
-  const updateComponent = useStore((state) => state.updateComponent);
-  const updateComponents = useStore((state) => state.updateComponents);
-  const selectedComponents = useStore((state) => state.getSelectedComponents());
+  const components = useComponents();
+  const { selectComponent, unselectComponent } = useComponentActions();
+
+  const { attributes, listeners, setNodeRef, transform } = useDraggable({
+    id: component.id,
+  });
 
   useClickOutsideDraggable(component);
 
-  const { ref, getCurrentPosition, onDrag } = useDraggable({
-    initialCoordinates: component.coordinates,
-    onDragEnd: () => {
-      const newCoordinates = getCurrentPosition();
-      updateComponent({
-        ...component,
-        coordinates: newCoordinates,
-      });
-    },
-  });
-
   const handleSelectComponent = () => {
-    updateComponents(
-      selectedComponents
-        .map((c) => ({ ...c, selected: false }))
-        .concat({ ...component, selected: true }),
-    );
+    const componentsToUnselect = components.filter((c) => c.selected);
+    componentsToUnselect.forEach((c) => {
+      unselectComponent(c.id);
+    });
+    selectComponent(component.id);
   };
 
   const renderComponent = () => {
@@ -71,7 +63,7 @@ export default function Draggable({ component }: DraggableProps) {
   return (
     <div
       id={component.id}
-      ref={ref}
+      ref={setNodeRef}
       className={cn(
         component.selected &&
           "ring-2 outline-none ring-ring ring-offset-background ring-offset-2 rounded-md",
@@ -80,9 +72,15 @@ export default function Draggable({ component }: DraggableProps) {
         position: "absolute",
         left: `${component.coordinates.x}px`,
         top: `${component.coordinates.y}px`,
+        ...(transform
+          ? {
+              transform: `translate3d(${transform.x}px, ${transform.y}px, 0px)`,
+            }
+          : {}),
       }}
       onClick={handleSelectComponent}
-      onMouseDown={onDrag}
+      {...listeners}
+      {...attributes}
     >
       {renderComponent()}
     </div>

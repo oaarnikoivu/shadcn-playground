@@ -1,22 +1,15 @@
 import Section from "@/components/editor/section.tsx";
-import useStore from "@/stores";
+import { useComponentActions, useSelected } from "@/stores";
 import { Input } from "@/components/ui/input.tsx";
 import { Label } from "@/components/ui/label.tsx";
 import React from "react";
-import {
-  horizontalSpacing,
-  horizontalSpacingContainerWidth,
-  verticalSpacing,
-  verticalSpacingContainerHeight,
-} from "@/utils/spacing.ts";
+import { horizontalSpacing, verticalSpacing } from "@/utils/spacing.ts";
 
 const spacingTypes = ["horizontal", "vertical"] as const;
 
 export default function Spacing() {
-  const componentsToUpdate = useStore((state) => state.getSelectedComponents());
-  const updateComponents = useStore((state) => state.updateComponents);
-  const boundingBox = useStore((state) => state.boundingBox);
-  const setBoundingBox = useStore((state) => state.setBoundingBox);
+  const componentsToUpdate = useSelected();
+  const { updateCoordinates } = useComponentActions();
 
   const handleHorizontalSpacingChange = (
     e: React.ChangeEvent<HTMLInputElement>,
@@ -32,19 +25,9 @@ export default function Spacing() {
       })),
     );
 
-    const totalWidth = horizontalSpacingContainerWidth(
-      spacedComponents,
-      spacing,
-    );
-
-    if (boundingBox && totalWidth) {
-      setBoundingBox({
-        ...boundingBox,
-        width: totalWidth,
-      });
-    }
-
-    updateComponents(spacedComponents);
+    spacedComponents.forEach((c) => {
+      updateCoordinates(c.id, { x: c.coordinates.x, y: c.coordinates.y });
+    });
   };
 
   const handleVerticalSpacingChange = (
@@ -61,19 +44,9 @@ export default function Spacing() {
       })),
     );
 
-    const totalHeight = verticalSpacingContainerHeight(
-      spacedComponents,
-      spacing,
-    );
-
-    if (boundingBox && totalHeight) {
-      setBoundingBox({
-        ...boundingBox,
-        height: totalHeight,
-      });
-    }
-
-    updateComponents(spacedComponents);
+    spacedComponents.forEach((c) => {
+      updateCoordinates(c.id, { x: c.coordinates.x, y: c.coordinates.y });
+    });
   };
 
   if (componentsToUpdate.length <= 1) return null;

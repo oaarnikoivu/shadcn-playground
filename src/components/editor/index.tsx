@@ -1,6 +1,6 @@
 import { Popover, PopoverContent } from "@/components/ui/popover.tsx";
 import ButtonProperties from "@/components/editor/button-properties.tsx";
-import useStore from "@/stores";
+import { useSelected } from "@/stores";
 import Value from "@/components/editor/value.tsx";
 import Align from "@/components/editor/align.tsx";
 import Actions from "@/components/editor/actions.tsx";
@@ -8,7 +8,7 @@ import InputProperties from "@/components/editor/input-properties.tsx";
 import Spacing from "@/components/editor/spacing.tsx";
 
 export default function Editor() {
-  const selectedComponents = useStore((state) => state.getSelectedComponents());
+  const selectedComponents = useSelected();
 
   const uniqueComponentTypes = Array.from(
     new Set(selectedComponents.map((c) => c.type)),

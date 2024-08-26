@@ -4,13 +4,11 @@ import {
   useSelectionContainer,
 } from "@air/react-drag-to-select";
 import { useState } from "react";
-import useStore from "@/stores";
-import createBoundingBox from "@/utils/createBoundingBox.ts";
+import { useComponentActions, useComponents } from "@/stores";
 
 export default function DragSelection() {
-  const components = useStore((state) => state.components);
-  const updateComponents = useStore((state) => state.updateComponents);
-  const setBoundingBox = useStore((state) => state.setBoundingBox);
+  const components = useComponents();
+  const { selectComponents } = useComponentActions();
 
   const [selectionBox, setSelectionBox] = useState<Box | null>(null);
 
@@ -41,15 +39,7 @@ export default function DragSelection() {
       });
 
       if (componentsInSelection.length) {
-        updateComponents(
-          componentsInSelection.map((component) => {
-            return {
-              ...component,
-              selected: true,
-            };
-          }),
-        );
-        setBoundingBox(createBoundingBox(componentsInSelection));
+        selectComponents(componentsInSelection.map((c) => c.id));
       }
     },
   });

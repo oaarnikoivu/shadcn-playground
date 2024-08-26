@@ -1,15 +1,13 @@
 import Size from "@/components/editor/size.tsx";
 import { Input } from "@/components/ui/input.tsx";
-import useStore from "@/stores";
+import { useComponentActions, useSelectedByType } from "@/stores";
 import { InputProperties as TInputProperties } from "@/types/component.ts";
 import React, { useMemo } from "react";
 import Section from "@/components/editor/section.tsx";
 
 export default function InputProperties() {
-  const componentsToUpdate = useStore((state) =>
-    state.getSelectedComponents(),
-  ).filter((c) => c.type === "input");
-  const updateComponents = useStore((state) => state.updateComponents);
+  const componentsToUpdate = useSelectedByType("input");
+  const { updateProperties } = useComponentActions();
 
   const placeholder = useMemo(() => {
     if (!componentsToUpdate.length) return "";
@@ -32,15 +30,12 @@ export default function InputProperties() {
   const handlePlaceholderChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newPlaceholder = e.target.value;
 
-    updateComponents(
-      componentsToUpdate.map((c) => ({
-        ...c,
-        properties: {
-          ...c.properties,
-          placeholder: newPlaceholder,
-        },
-      })),
-    );
+    componentsToUpdate.forEach((c) => {
+      updateProperties(c.id, {
+        ...c.properties,
+        placeholder: newPlaceholder,
+      });
+    });
   };
 
   return (

@@ -1,4 +1,4 @@
-import useStore from "@/stores";
+import { useStore } from "@/stores";
 
 export function createShareableLink() {
   const state = useStore.getState();

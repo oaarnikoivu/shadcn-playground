@@ -2,16 +2,14 @@ import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group.tsx";
 import { BUTTON_SIZES, BUTTON_VARIANTS } from "@/constants.ts";
 import { VariantProps } from "class-variance-authority";
 import { Button } from "@/components/ui/button.tsx";
-import useStore from "@/stores";
+import { useComponentActions, useSelectedByType } from "@/stores";
 import { ButtonProperties as TButtonProperties } from "@/types/component.ts";
 import Section from "@/components/editor/section.tsx";
 import { useMemo } from "react";
 
 export default function ButtonProperties() {
-  const componentsToUpdate = useStore((state) =>
-    state.getSelectedComponents(),
-  ).filter((c) => c.selected && c.type === "button");
-  const updateComponents = useStore((state) => state.updateComponents);
+  const componentsToUpdate = useSelectedByType("button");
+  const { updateProperties } = useComponentActions();
 
   const size = useMemo(() => {
     if (!componentsToUpdate.length) return "";
@@ -49,27 +47,21 @@ export default function ButtonProperties() {
   }, [componentsToUpdate]);
 
   const handleSizeChange = (value: string) => {
-    updateComponents(
-      componentsToUpdate.map((c) => ({
-        ...c,
-        properties: {
-          ...c.properties,
-          size: value as VariantProps<typeof Button>["size"],
-        },
-      })),
-    );
+    componentsToUpdate.forEach((c) => {
+      updateProperties(c.id, {
+        ...c.properties,
+        size: value as VariantProps<typeof Button>["size"],
+      });
+    });
   };
 
   const handleVariantChange = (value: string) => {
-    updateComponents(
-      componentsToUpdate.map((c) => ({
-        ...c,
-        properties: {
-          ...c.properties,
-          variant: value as VariantProps<typeof Button>["variant"],
-        },
-      })),
-    );
+    componentsToUpdate.forEach((c) => {
+      updateProperties(c.id, {
+        ...c.properties,
+        variant: value as VariantProps<typeof Button>["variant"],
+      });
+    });
   };
 
   return (

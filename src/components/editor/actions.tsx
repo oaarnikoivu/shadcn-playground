@@ -6,21 +6,22 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip.tsx";
-import useStore from "@/stores";
+import { useComponentActions, useSelected } from "@/stores";
 import Section from "@/components/editor/section.tsx";
 
 const ACTIONS = ["copy", "delete"] as const;
 
 export default function Actions() {
-  const componentsToUpdate = useStore((state) =>
-    state.getSelectedComponents(),
-  ).filter((c) => c.selected);
-  const copyComponents = useStore((state) => state.copyComponents);
-  const removeComponents = useStore((state) => state.removeComponents);
+  const selectedComponents = useSelected();
+  const { copyComponent, removeComponent } = useComponentActions();
 
-  const handleCopy = () => copyComponents(componentsToUpdate);
+  const handleCopy = () => {
+    selectedComponents.forEach((component) => copyComponent(component.id));
+  };
 
-  const handleDelete = () => removeComponents(componentsToUpdate);
+  const handleDelete = () => {
+    selectedComponents.forEach((component) => removeComponent(component.id));
+  };
 
   return (
     <Section title="Actions">

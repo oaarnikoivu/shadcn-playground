@@ -7,11 +7,11 @@ import {
 } from "@/components/ui/tooltip.tsx";
 import { THEMES } from "@/constants.ts";
 import { Monitor, Moon, Sun } from "lucide-react";
-import useStore from "@/stores";
+import { useStoreTheme, useThemeActions } from "@/stores";
 
 export default function ThemeToggleGroup() {
-  const theme = useStore((state) => state.theme);
-  const setTheme = useStore((state) => state.setTheme);
+  const theme = useStoreTheme();
+  const { updateTheme } = useThemeActions();
 
   return (
     <ToggleGroup
@@ -19,7 +19,7 @@ export default function ThemeToggleGroup() {
       size="sm"
       value={theme}
       defaultValue="light"
-      onValueChange={setTheme}
+      onValueChange={updateTheme}
     >
       <TooltipProvider>
         {THEMES.map((th) => (
