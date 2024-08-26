@@ -49,6 +49,7 @@ function Draggable() {
       attributes: true,
       childList: true,
       subtree: true,
+      characterData: true,
     });
 
     return () => {

@@ -55,7 +55,9 @@ export default function Spacing() {
     <Section title="Spacing (px)">
       {spacingTypes.map((type) => (
         <div key={type} className="grid grid-cols-3 items-center">
-          <Label htmlFor={`${type}-spacing`}>{type}</Label>
+          <Label htmlFor={`${type}-spacing`} className="capitalize">
+            {type}
+          </Label>
           <Input
             id={`${type}-spacing`}
             className="h-8 col-span-2"
