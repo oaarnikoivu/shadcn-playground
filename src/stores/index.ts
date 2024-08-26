@@ -6,18 +6,28 @@ import {
 import { createThemeSlice, ThemeSlice } from "@/stores/createThemeSlice.ts";
 import { persist } from "zustand/middleware";
 import { SUPPORTED_COMPONENTS } from "@/constants.ts";
+import { temporal } from "zundo";
 
 export const useStore = create<ComponentSlice & ThemeSlice>()(
-  persist(
-    (...a) => ({
-      ...createComponentSlice(...a),
-      ...createThemeSlice(...a),
-    }),
+  temporal(
+    persist(
+      (...a) => ({
+        ...createComponentSlice(...a),
+        ...createThemeSlice(...a),
+      }),
+      {
+        name: "app-store",
+        partialize: (state) => ({
+          // eslint-disable-next-line @typescript-eslint/no-unused-vars
+          components: state.components.map(({ selected, ...rest }) => rest),
+          theme: state.theme,
+        }),
+      },
+    ),
     {
-      name: "app-store",
       partialize: (state) => ({
-        components: state.components,
-        theme: state.theme,
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        components: state.components.map(({ selected, ...rest }) => rest),
       }),
     },
   ),
