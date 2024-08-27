@@ -3,10 +3,13 @@ import { useComponentActions, useSelected, useStore } from "@/stores";
 import { Box } from "@air/react-drag-to-select";
 import { useEffect, useRef, useState } from "react";
 import createBoundingBox from "@/utils/createBoundingBox.ts";
+import useSnapModifier from "@/hooks/useSnapModifier.ts";
 
 export default function BoundingBox() {
   const selectedComponents = useSelected();
   const { updateCoordinates } = useComponentActions();
+
+  const modifiers = useSnapModifier();
 
   const handleDragEnd = ({ delta }: DragEndEvent) => {
     if (!delta.x && !delta.y) return;
@@ -20,7 +23,7 @@ export default function BoundingBox() {
   };
 
   return (
-    <DndContext onDragEnd={handleDragEnd}>
+    <DndContext modifiers={modifiers} onDragEnd={handleDragEnd}>
       <Draggable />
     </DndContext>
   );

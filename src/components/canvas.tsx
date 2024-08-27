@@ -8,10 +8,13 @@ import {
   useSensor,
   useSensors,
 } from "@dnd-kit/core";
+import useSnapModifier from "@/hooks/useSnapModifier.ts";
 
 export default function Canvas() {
   const components = useComponents();
   const { updateCoordinates } = useComponentActions();
+
+  const modifiers = useSnapModifier();
 
   const sensors = useSensors(
     useSensor(MouseSensor, { activationConstraint: { distance: 10 } }),
@@ -32,7 +35,11 @@ export default function Canvas() {
 
   return (
     <main id="canvas" className="w-screen h-[calc(100vh-88px)] relative">
-      <DndContext onDragEnd={handleDragEnd} sensors={sensors}>
+      <DndContext
+        modifiers={modifiers}
+        onDragEnd={handleDragEnd}
+        sensors={sensors}
+      >
         {components.map((component) => (
           <Draggable key={component.id} component={component} />
         ))}

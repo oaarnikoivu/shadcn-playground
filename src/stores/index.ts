@@ -42,6 +42,8 @@ export const useSelectedByType = (
   type: (typeof SUPPORTED_COMPONENTS)[number],
 ) => useSelected().filter((c) => c.type === type);
 
+export const useGridView = () => useStore((state) => state.gridView);
+
 export const useComponentActions = () =>
   useStore((state) => state.componentActions);
 

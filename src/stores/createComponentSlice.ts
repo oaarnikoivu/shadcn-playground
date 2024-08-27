@@ -3,6 +3,7 @@ import { StateCreator } from "zustand";
 
 export type ComponentSlice = {
   components: PlaygroundUIComponent[];
+  gridView: boolean;
   componentActions: {
     addComponent: (component: PlaygroundUIComponent) => void;
     removeComponent: (id: string) => void;
@@ -15,6 +16,7 @@ export type ComponentSlice = {
       coordinates: { x: number; y: number },
     ) => void;
     updateProperties: (id: string, properties: Properties) => void;
+    updateGridView: (gridView: boolean) => void;
     clearComponents: () => void;
   };
 };
@@ -26,6 +28,7 @@ export const createComponentSlice: StateCreator<
   ComponentSlice
 > = (set, get) => ({
   components: [],
+  gridView: false,
   componentActions: {
     addComponent: (component) =>
       set({ components: [...get().components, component] }),
@@ -77,6 +80,7 @@ export const createComponentSlice: StateCreator<
         ),
       });
     },
+    updateGridView: (gridView: boolean) => set({ gridView }),
     clearComponents: () => set({ components: [] }),
   },
 });
