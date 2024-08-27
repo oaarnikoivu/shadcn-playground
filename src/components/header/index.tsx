@@ -13,7 +13,7 @@ export default function Header() {
     updateGridView(value === "grid");
 
   return (
-    <header className="flex items-center justify-between px-4 h-header sticky top-0">
+    <header className="flex items-center justify-between px-4 h-header sticky top-0 z-10">
       <Menu />
       <div className="flex items-center gap-2 rounded-md border shadow-md p-1">
         <ToggleGroup type="single" onValueChange={handleToggleGridView}>

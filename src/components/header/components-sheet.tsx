@@ -27,7 +27,7 @@ export default function ComponentsSheet() {
       id: crypto.randomUUID(),
       type: componentType as (typeof SUPPORTED_COMPONENTS)[number],
       // TODO: get valid coordinates
-      coordinates: { x: 0, y: 0 },
+      coordinates: { x: 0, y: 88 },
       properties: {
         size: "default",
         variant: "default",

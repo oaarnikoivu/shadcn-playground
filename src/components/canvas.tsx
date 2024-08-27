@@ -9,6 +9,7 @@ import {
   useSensors,
 } from "@dnd-kit/core";
 import useSnapModifier from "@/hooks/useSnapModifier.ts";
+import GridOverlay from "@/components/grid-overlay.tsx";
 
 export default function Canvas() {
   const components = useComponents();
@@ -34,7 +35,11 @@ export default function Canvas() {
   };
 
   return (
-    <main id="canvas" className="w-screen h-[calc(100vh-88px)] relative">
+    <main
+      id="canvas"
+      className="w-screen h-screen -mt-[var(--header-height)] relative"
+    >
+      {modifiers.length > 0 && <GridOverlay gridSize={40} />}
       <DndContext
         modifiers={modifiers}
         onDragEnd={handleDragEnd}
