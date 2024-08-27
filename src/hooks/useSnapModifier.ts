@@ -11,5 +11,5 @@ export default function useSnapModifier(gridSize: number = 20) {
     } else {
       return [];
     }
-  }, [gridView]);
+  }, [gridSize, gridView]);
 }
