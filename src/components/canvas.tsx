@@ -24,6 +24,11 @@ export default function Canvas() {
     useSensor(TouchSensor),
   );
 
+  const [translateX, setTranslateX] = useState(0);
+  const [translateY, setTranslateY] = useState(0);
+  const [isPanning, setIsPanning] = useState(false);
+  const [startPan, setStartPan] = useState({ x: 0, y: 0 });
+
   const handleDragEnd = ({ delta, active }: DragEndEvent) => {
     if (!delta.x && !delta.y) return;
 
@@ -35,11 +40,6 @@ export default function Canvas() {
       y: componentToUpdate.coordinates.y + delta.y,
     });
   };
-
-  const [translateX, setTranslateX] = useState(0);
-  const [translateY, setTranslateY] = useState(0);
-  const [isPanning, setIsPanning] = useState(false);
-  const [startPan, setStartPan] = useState({ x: 0, y: 0 });
 
   const handleMouseDown = useCallback(
     (event: React.MouseEvent) => {
@@ -93,8 +93,8 @@ export default function Canvas() {
       {modifiers.length > 0 && <GridOverlay gridSize={40} />}
       <DndContext
         modifiers={modifiers}
-        onDragEnd={handleDragEnd}
         sensors={sensors}
+        onDragEnd={handleDragEnd}
       >
         <div
           id="infinite-canvas"
