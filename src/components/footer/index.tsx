@@ -8,7 +8,7 @@ export default function Footer() {
   const selectedComponents = useSelected();
 
   return (
-    <footer className="flex items-center justify-between w-screen px-4 fixed h-header bottom-0">
+    <footer className="flex items-center justify-between w-screen px-4 fixed h-header bottom-0 bg-transparent">
       <HistoryToggle />
       {selectedComponents.length > 0 && (
         <Input id="prompt" className="w-[40%]" placeholder="Prompt..." />

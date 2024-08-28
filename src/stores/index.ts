@@ -44,6 +44,8 @@ export const useSelectedByType = (
 
 export const useGridView = () => useStore((state) => state.gridView);
 
+export const useCursorType = () => useStore((state) => state.cursorType);
+
 export const useComponentActions = () =>
   useStore((state) => state.componentActions);
 

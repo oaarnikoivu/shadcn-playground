@@ -67,6 +67,5 @@
   }
   body {
     @apply bg-background text-foreground font-geist;
-    overflow: hidden;
   }
 }

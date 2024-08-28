@@ -15,7 +15,7 @@ export default function DragSelection() {
   const { DragSelection } = useSelectionContainer({
     shouldStartSelecting: (target) => {
       if (target instanceof HTMLElement) {
-        return target.id === "canvas";
+        return target.id === "canvas" || target.id === "infinite-canvas";
       }
       return false;
     },

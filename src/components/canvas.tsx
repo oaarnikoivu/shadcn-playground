@@ -1,5 +1,6 @@
+import React, { useState, useCallback, useEffect } from "react";
 import Draggable from "@/components/draggable.tsx";
-import { useComponentActions, useComponents } from "@/stores";
+import { useComponentActions, useComponents, useCursorType } from "@/stores";
 import {
   DndContext,
   DragEndEvent,
@@ -13,6 +14,7 @@ import GridOverlay from "@/components/grid-overlay.tsx";
 
 export default function Canvas() {
   const components = useComponents();
+  const cursorType = useCursorType();
   const { updateCoordinates } = useComponentActions();
 
   const modifiers = useSnapModifier();
@@ -34,10 +36,59 @@ export default function Canvas() {
     });
   };
 
+  const [translateX, setTranslateX] = useState(0);
+  const [translateY, setTranslateY] = useState(0);
+  const [isPanning, setIsPanning] = useState(false);
+  const [startPan, setStartPan] = useState({ x: 0, y: 0 });
+
+  const handleMouseDown = useCallback(
+    (event: React.MouseEvent) => {
+      if (cursorType === "cursor") return;
+      document.body.style.cursor = "grabbing";
+      setIsPanning(true);
+      setStartPan({
+        x: event.clientX - translateX,
+        y: event.clientY - translateY,
+      });
+    },
+    [translateX, translateY, cursorType],
+  );
+
+  const handleMouseMove = useCallback(
+    (event: React.MouseEvent) => {
+      if (!isPanning || cursorType === "cursor") return;
+      setTranslateX(event.clientX - startPan.x);
+      setTranslateY(event.clientY - startPan.y);
+    },
+    [isPanning, startPan, cursorType],
+  );
+
+  const handleMouseUp = useCallback(() => {
+    if (cursorType === "cursor") return;
+    document.body.style.cursor = "grab";
+    setIsPanning(false);
+  }, [cursorType]);
+
+  const handleWheel = useCallback((event: WheelEvent) => {
+    setTranslateX((prev) => prev - event.deltaX);
+    setTranslateY((prev) => prev - event.deltaY);
+  }, []);
+
+  useEffect(() => {
+    window.addEventListener("wheel", handleWheel);
+    return () => {
+      window.removeEventListener("wheel", handleWheel);
+    };
+  }, [handleWheel]);
+
   return (
     <main
       id="canvas"
-      className="w-screen h-screen -mt-[var(--header-height)] relative"
+      className="w-screen h-screen relative overflow-hidden"
+      onMouseDown={handleMouseDown}
+      onMouseMove={handleMouseMove}
+      onMouseUp={handleMouseUp}
+      onMouseLeave={handleMouseUp}
     >
       {modifiers.length > 0 && <GridOverlay gridSize={40} />}
       <DndContext
@@ -45,9 +96,20 @@ export default function Canvas() {
         onDragEnd={handleDragEnd}
         sensors={sensors}
       >
-        {components.map((component) => (
-          <Draggable key={component.id} component={component} />
-        ))}
+        <div
+          id="infinite-canvas"
+          style={{
+            transform: `translate(${translateX}px, ${translateY}px)`,
+            transformOrigin: "0 0",
+            position: "relative",
+            width: "100%",
+            height: "100%",
+          }}
+        >
+          {components.map((component) => (
+            <Draggable key={component.id} component={component} />
+          ))}
+        </div>
       </DndContext>
     </main>
   );
