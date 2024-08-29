@@ -30,4 +30,5 @@ export type PlaygroundUIComponent = {
   coordinates: Coordinate;
   properties: Properties;
   selected?: boolean;
+  groupId?: string;
 };

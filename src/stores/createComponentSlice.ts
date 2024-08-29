@@ -12,6 +12,7 @@ export type ComponentSlice = {
     selectComponents: (ids: string[]) => void;
     unselectComponent: (id: string) => void;
     copyComponent: (id: string) => void;
+    groupComponents: (ids: string[]) => void;
     updateCoordinates: (
       id: string,
       coordinates: { x: number; y: number },
@@ -69,6 +70,21 @@ export const createComponentSlice: StateCreator<
           ],
         });
       }
+    },
+    groupComponents: (ids: string[]) => {
+      const components = get().components;
+      const selectedComponents = components.filter((c) => ids.includes(c.id));
+      const allHaveSameGroupId = selectedComponents.every(
+        (c) => c.groupId && c.groupId === selectedComponents[0].groupId,
+      );
+
+      const newGroupId = allHaveSameGroupId ? undefined : crypto.randomUUID();
+
+      set((state) => ({
+        components: state.components.map((c) =>
+          ids.includes(c.id) ? { ...c, groupId: newGroupId } : c,
+        ),
+      }));
     },
     updateCoordinates: (id: string, coordinates: { x: number; y: number }) =>
       set((state) => ({

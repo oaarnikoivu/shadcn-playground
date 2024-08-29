@@ -4,10 +4,11 @@ import {
   useSelectionContainer,
 } from "@air/react-drag-to-select";
 import { useState } from "react";
-import { useComponentActions, useComponents } from "@/stores";
+import { useComponentActions, useComponents, useCursorType } from "@/stores";
 
 export default function DragSelection() {
   const components = useComponents();
+  const cursorType = useCursorType();
   const { selectComponents } = useComponentActions();
 
   const [selectionBox, setSelectionBox] = useState<Box | null>(null);
@@ -43,6 +44,8 @@ export default function DragSelection() {
       }
     },
   });
+
+  if (cursorType !== "cursor") return null;
 
   return <DragSelection />;
 }

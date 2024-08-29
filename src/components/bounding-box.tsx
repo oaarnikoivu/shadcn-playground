@@ -41,6 +41,7 @@ function Draggable() {
       const selectedComponents = useStore
         .getState()
         .components.filter((c) => c.selected);
+
       if (selectedComponents.length > 0) {
         setBoundingBox(createBoundingBox(selectedComponents));
       } else {

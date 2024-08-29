@@ -1,5 +1,5 @@
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group.tsx";
-import { Copy, Trash2 } from "lucide-react";
+import { Copy, Group, Trash2 } from "lucide-react";
 import {
   Tooltip,
   TooltipContent,
@@ -9,15 +9,24 @@ import {
 import { useComponentActions, useSelected } from "@/stores";
 import Section from "@/components/editor/section.tsx";
 
-const ACTIONS = ["copy", "delete"] as const;
+const ACTIONS = ["copy", "group", "delete"] as const;
 
 export default function Actions() {
   const selectedComponents = useSelected();
-  const { copyComponent, removeComponent } = useComponentActions();
+  const { copyComponent, removeComponent, groupComponents } =
+    useComponentActions();
+
+  const displayActions =
+    selectedComponents.length > 1
+      ? ACTIONS
+      : ACTIONS.filter((a) => a !== "group");
 
   const handleCopy = () => {
     selectedComponents.forEach((component) => copyComponent(component.id));
   };
+
+  const handleGroup = () =>
+    groupComponents(selectedComponents.map((component) => component.id));
 
   const handleDelete = () => {
     selectedComponents.forEach((component) => removeComponent(component.id));
@@ -27,16 +36,24 @@ export default function Actions() {
     <Section title="Actions">
       <ToggleGroup type="single" className="justify-start">
         <TooltipProvider>
-          {ACTIONS.map((action) => (
+          {displayActions.map((action) => (
             <Tooltip key={action}>
               <TooltipTrigger asChild>
                 <ToggleGroupItem
                   value={action}
                   aria-label={action}
-                  onClick={action === "copy" ? handleCopy : handleDelete}
+                  onClick={
+                    action === "copy"
+                      ? handleCopy
+                      : action == "group"
+                        ? handleGroup
+                        : handleDelete
+                  }
                 >
                   {action === "copy" ? (
                     <Copy className="size-4" />
+                  ) : action === "group" ? (
+                    <Group className="size-4" />
                   ) : (
                     <Trash2 className="size-4" />
                   )}

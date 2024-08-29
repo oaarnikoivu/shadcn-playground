@@ -8,11 +8,8 @@ import { Toaster } from "@/components/ui/sonner.tsx";
 import { CheckCircle2 } from "lucide-react";
 import useInitializeStoreFromLink from "@/hooks/useInitializeStoreFromLink.ts";
 import useTheme from "@/hooks/useTheme.ts";
-import { useCursorType } from "@/stores";
 
 function App() {
-  const cursorType = useCursorType();
-
   useInitializeStoreFromLink();
   useTheme();
 
@@ -20,7 +17,7 @@ function App() {
     <>
       <Header />
       <Editor />
-      {cursorType === "cursor" && <DragSelection />}
+      <DragSelection />
       <BoundingBox />
       <Canvas />
       <Footer />
