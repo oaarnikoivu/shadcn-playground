@@ -1,5 +1,5 @@
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group.tsx";
-import { Copy, Group, Trash2 } from "lucide-react";
+import { Copy, Group, Trash2, Ungroup } from "lucide-react";
 import {
   Tooltip,
   TooltipContent,
@@ -20,6 +20,10 @@ export default function Actions() {
     selectedComponents.length > 1
       ? ACTIONS
       : ACTIONS.filter((a) => a !== "group");
+
+  const groupId = selectedComponents[0]?.groupId;
+  const allHaveSameGroupId =
+    !!groupId && selectedComponents.every((c) => c.groupId === groupId);
 
   const handleCopy = () => {
     selectedComponents.forEach((component) => copyComponent(component.id));
@@ -53,13 +57,19 @@ export default function Actions() {
                   {action === "copy" ? (
                     <Copy className="size-4" />
                   ) : action === "group" ? (
-                    <Group className="size-4" />
+                    allHaveSameGroupId ? (
+                      <Ungroup className="size-4" />
+                    ) : (
+                      <Group className="size-4" />
+                    )
                   ) : (
                     <Trash2 className="size-4" />
                   )}
                 </ToggleGroupItem>
               </TooltipTrigger>
-              <TooltipContent className="capitalize">{action}</TooltipContent>
+              <TooltipContent className="capitalize">
+                {action === "group" && allHaveSameGroupId ? "ungroup" : action}
+              </TooltipContent>
             </Tooltip>
           ))}
         </TooltipProvider>
