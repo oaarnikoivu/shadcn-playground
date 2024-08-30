@@ -1,35 +1,10 @@
-import { DndContext, DragEndEvent, useDraggable } from "@dnd-kit/core";
-import { useComponentActions, useSelected, useStore } from "@/stores";
-import { Box } from "@air/react-drag-to-select";
 import { useEffect, useRef, useState } from "react";
+import { Box } from "@air/react-drag-to-select";
+import { useStore } from "@/stores";
 import createBoundingBox from "@/utils/createBoundingBox.ts";
-import useSnapModifier from "@/hooks/useSnapModifier.ts";
+import { useDraggable } from "@dnd-kit/core";
 
-export default function BoundingBox() {
-  const selectedComponents = useSelected();
-  const { updateCoordinates } = useComponentActions();
-
-  const modifiers = useSnapModifier();
-
-  const handleDragEnd = ({ delta }: DragEndEvent) => {
-    if (!delta.x && !delta.y) return;
-
-    selectedComponents.forEach((c) => {
-      updateCoordinates(c.id, {
-        x: c.coordinates.x + delta.x,
-        y: c.coordinates.y + delta.y,
-      });
-    });
-  };
-
-  return (
-    <DndContext modifiers={modifiers} onDragEnd={handleDragEnd}>
-      <Draggable />
-    </DndContext>
-  );
-}
-
-function Draggable() {
+export default function BoundingBoxDraggable() {
   const observer = useRef<MutationObserver | null>(null);
   const [boundingBox, setBoundingBox] = useState<Box | null>(null);
 
