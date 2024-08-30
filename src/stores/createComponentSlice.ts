@@ -3,8 +3,6 @@ import { StateCreator } from "zustand";
 
 export type ComponentSlice = {
   components: PlaygroundUIComponent[];
-  gridView: boolean;
-  cursorType: "cursor" | "grab";
   componentActions: {
     addComponent: (component: PlaygroundUIComponent) => void;
     removeComponent: (id: string) => void;
@@ -18,8 +16,6 @@ export type ComponentSlice = {
       coordinates: { x: number; y: number },
     ) => void;
     updateProperties: (id: string, properties: Properties) => void;
-    updateGridView: (gridView: boolean) => void;
-    updateCursorType: (cursorType: "cursor" | "grab") => void;
     clearComponents: () => void;
   };
 };
@@ -31,8 +27,6 @@ export const createComponentSlice: StateCreator<
   ComponentSlice
 > = (set, get) => ({
   components: [],
-  gridView: false,
-  cursorType: "cursor",
   componentActions: {
     addComponent: (component) =>
       set({ components: [...get().components, component] }),
@@ -99,8 +93,6 @@ export const createComponentSlice: StateCreator<
         ),
       });
     },
-    updateGridView: (gridView: boolean) => set({ gridView }),
-    updateCursorType: (cursorType: "cursor" | "grab") => set({ cursorType }),
     clearComponents: () => set({ components: [] }),
   },
 });

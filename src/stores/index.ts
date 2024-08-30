@@ -7,12 +7,17 @@ import { createThemeSlice, ThemeSlice } from "@/stores/createThemeSlice.ts";
 import { persist } from "zustand/middleware";
 import { SUPPORTED_COMPONENTS } from "@/constants.ts";
 import { temporal } from "zundo";
+import {
+  createToolbarSlice,
+  ToolbarSlice,
+} from "@/stores/createToolbarSlice.ts";
 
-export const useStore = create<ComponentSlice & ThemeSlice>()(
+export const useStore = create<ComponentSlice & ToolbarSlice & ThemeSlice>()(
   temporal(
     persist(
       (...a) => ({
         ...createComponentSlice(...a),
+        ...createToolbarSlice(...a),
         ...createThemeSlice(...a),
       }),
       {
@@ -42,12 +47,15 @@ export const useSelectedByType = (
   type: (typeof SUPPORTED_COMPONENTS)[number],
 ) => useSelected().filter((c) => c.type === type);
 
-export const useGridView = () => useStore((state) => state.gridView);
+export const useGridView = () => useStore((state) => state.enableGridView);
 
-export const useCursorType = () => useStore((state) => state.cursorType);
+export const useCursorType = () => useStore((state) => state.cursor);
 
 export const useComponentActions = () =>
   useStore((state) => state.componentActions);
+
+export const useToolbarActions = () =>
+  useStore((state) => state.toolbarActions);
 
 export const useStoreTheme = () => useStore((state) => state.theme);
 

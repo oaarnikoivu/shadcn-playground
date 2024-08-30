@@ -1,15 +1,15 @@
-import { useComponentActions, useCursorType } from "@/stores";
+import { useCursorType, useToolbarActions } from "@/stores";
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group.tsx";
 import { Hand, MousePointer } from "lucide-react";
 
 export default function CursorType() {
   const cursorType = useCursorType();
-  const { updateCursorType } = useComponentActions();
+  const { updateCursor } = useToolbarActions();
 
   const handleToggleCursorType = (value?: string) => {
     if (!value) return;
 
-    const newCursorType = value as "cursor" | "grab";
+    const newCursorType = value as typeof cursorType;
 
     if (newCursorType === "grab") {
       document.body.style.cursor = "grab";
@@ -17,7 +17,7 @@ export default function CursorType() {
       document.body.style.cursor = "auto";
     }
 
-    updateCursorType(newCursorType);
+    updateCursor(newCursorType);
   };
 
   return (
