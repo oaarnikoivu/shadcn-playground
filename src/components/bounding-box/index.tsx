@@ -1,6 +1,6 @@
 import { DndContext, DragEndEvent, DragMoveEvent } from "@dnd-kit/core";
 import { useComponentActions, useSelected } from "@/stores";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import BoundingBoxDraggable from "@/components/bounding-box/bounding-box-draggable.tsx";
 import CanvasComponent from "@/components/canvas-component.tsx";
 
@@ -8,7 +8,7 @@ export default function BoundingBox() {
   const selectedComponents = useSelected();
   const { updateCoordinates } = useComponentActions();
 
-  const [initialComponentPositions, setInitialComponentPositions] = useState<
+  const initialComponentPositionsRef = useRef<
     Record<string, { left: number; top: number }>
   >({});
 
@@ -16,7 +16,7 @@ export default function BoundingBox() {
     Record<string, { left: number; top: number }>
   >({});
 
-  const [isDragging, setIsDragging] = useState(false);
+  const isDraggingRef = useRef(false);
 
   const showSelectedComponents = (show: boolean) => {
     selectedComponents.forEach((c) => {
@@ -27,33 +27,31 @@ export default function BoundingBox() {
   };
 
   const handleDragStart = () => {
-    setInitialComponentPositions(
-      selectedComponents.reduce(
-        (acc, c) => {
-          const el = document.getElementById(c.id);
-          if (el) {
-            const rect = el.getBoundingClientRect();
-            acc[c.id] = {
-              left: rect.left + window.scrollX,
-              top: rect.top + window.scrollY,
-            };
-          }
-          return acc;
-        },
-        {} as Record<string, { left: number; top: number }>,
-      ),
+    initialComponentPositionsRef.current = selectedComponents.reduce(
+      (acc, c) => {
+        const el = document.getElementById(c.id);
+        if (el) {
+          const rect = el.getBoundingClientRect();
+          acc[c.id] = {
+            left: rect.left + window.scrollX,
+            top: rect.top + window.scrollY,
+          };
+        }
+        return acc;
+      },
+      {} as Record<string, { left: number; top: number }>,
     );
   };
 
   const handleDragMove = ({ delta }: DragMoveEvent) => {
-    setIsDragging(true);
+    isDraggingRef.current = true;
 
     setNewComponentPositions(
       selectedComponents.reduce(
         (acc, c) => {
           acc[c.id] = {
-            left: initialComponentPositions[c.id].left + delta.x,
-            top: initialComponentPositions[c.id].top + delta.y,
+            left: initialComponentPositionsRef.current[c.id].left + delta.x,
+            top: initialComponentPositionsRef.current[c.id].top + delta.y,
           };
           return acc;
         },
@@ -74,15 +72,15 @@ export default function BoundingBox() {
       });
     });
 
+    isDraggingRef.current = false;
+    initialComponentPositionsRef.current = {};
     showSelectedComponents(true);
-    setIsDragging(false);
-    setInitialComponentPositions({});
     setNewComponentPositions({});
   };
 
   return (
     <>
-      {isDragging &&
+      {isDraggingRef.current &&
         selectedComponents.map((c) => (
           <div
             key={c.id}
