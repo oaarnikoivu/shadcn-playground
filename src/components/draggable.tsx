@@ -1,14 +1,9 @@
 import { cn } from "@/lib/utils";
-import {
-  ButtonProperties,
-  InputProperties,
-  PlaygroundUIComponent,
-} from "@/types/component";
-import { Button } from "./ui/button";
-import { Input } from "./ui/input";
+import { PlaygroundUIComponent } from "@/types/component";
 import { useComponentActions, useComponents } from "@/stores";
 import useClickOutsideDraggable from "@/hooks/useClickOutsideDraggable.ts";
 import { useDraggable } from "@dnd-kit/core";
+import CanvasComponent from "@/components/canvas-component.tsx";
 
 type DraggableProps = {
   component: PlaygroundUIComponent;
@@ -43,34 +38,6 @@ export default function Draggable({ component }: DraggableProps) {
     }
   };
 
-  const renderComponent = () => {
-    switch (component.type) {
-      case "button": {
-        const properties = component.properties as ButtonProperties;
-        return (
-          <Button variant={properties.variant} size={properties.size}>
-            {component.properties.value}
-          </Button>
-        );
-      }
-      case "input": {
-        const properties = component.properties as InputProperties;
-        return (
-          <Input
-            placeholder={properties.placeholder ?? ""}
-            value={properties.value}
-            style={{
-              width: properties.width && `${properties.width}px`,
-              height: properties.height && `${properties.height}px`,
-            }}
-          />
-        );
-      }
-      default:
-        return <></>;
-    }
-  };
-
   return (
     <div
       id={component.id}
@@ -93,7 +60,7 @@ export default function Draggable({ component }: DraggableProps) {
       {...listeners}
       {...attributes}
     >
-      {renderComponent()}
+      <CanvasComponent component={component} />
     </div>
   );
 }

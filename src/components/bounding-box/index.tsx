@@ -1,28 +1,25 @@
 import { DndContext, DragEndEvent, DragMoveEvent } from "@dnd-kit/core";
 import { useComponentActions, useSelected } from "@/stores";
 import { useState } from "react";
-import useSnapModifier from "@/hooks/useSnapModifier.ts";
-import { ButtonProperties, PlaygroundUIComponent } from "@/types/component.ts";
-import { Button } from "@/components/ui/button.tsx";
 import BoundingBoxDraggable from "@/components/bounding-box/bounding-box-draggable.tsx";
+import CanvasComponent from "@/components/canvas-component.tsx";
 
 export default function BoundingBox() {
   const selectedComponents = useSelected();
   const { updateCoordinates } = useComponentActions();
 
-  const [compPos, setCompPos] = useState<
+  const [initialComponentPositions, setInitialComponentPositions] = useState<
     Record<string, { left: number; top: number }>
   >({});
 
-  const [cLeft, setCLeft] = useState<Record<string, number>>({});
-  const [cTop, setCTop] = useState<Record<string, number>>({});
+  const [newComponentPositions, setNewComponentPositions] = useState<
+    Record<string, { left: number; top: number }>
+  >({});
 
   const [isDragging, setIsDragging] = useState(false);
 
-  const modifiers = useSnapModifier();
-
   const handleDragStart = () => {
-    setCompPos(
+    setInitialComponentPositions(
       selectedComponents.reduce(
         (acc, c) => {
           const el = document.getElementById(c.id);
@@ -43,23 +40,16 @@ export default function BoundingBox() {
   const handleDragMove = ({ delta }: DragMoveEvent) => {
     setIsDragging(true);
 
-    setCLeft(
+    setNewComponentPositions(
       selectedComponents.reduce(
         (acc, c) => {
-          acc[c.id] = compPos[c.id].left + delta.x;
+          acc[c.id] = {
+            left: initialComponentPositions[c.id].left + delta.x,
+            top: initialComponentPositions[c.id].top + delta.y,
+          };
           return acc;
         },
-        {} as Record<string, number>,
-      ),
-    );
-
-    setCTop(
-      selectedComponents.reduce(
-        (acc, c) => {
-          acc[c.id] = compPos[c.id].top + delta.y;
-          return acc;
-        },
-        {} as Record<string, number>,
+        {} as Record<string, { left: number; top: number }>,
       ),
     );
 
@@ -87,20 +77,8 @@ export default function BoundingBox() {
     });
 
     setIsDragging(false);
-    setCompPos({});
-    setCLeft({});
-    setCTop({});
-  };
-
-  const renderComponent = (c: PlaygroundUIComponent) => {
-    if (c.type === "button") {
-      const properties = c.properties as ButtonProperties;
-      return (
-        <Button variant={properties.variant} size={properties.size}>
-          {c.properties.value}
-        </Button>
-      );
-    }
+    setInitialComponentPositions({});
+    setNewComponentPositions({});
   };
 
   return (
@@ -111,15 +89,14 @@ export default function BoundingBox() {
             key={c.id}
             className="absolute z-10"
             style={{
-              left: cLeft[c.id],
-              top: cTop[c.id],
+              left: newComponentPositions[c.id].left,
+              top: newComponentPositions[c.id].top,
             }}
           >
-            {renderComponent(c)}
+            <CanvasComponent component={c} />
           </div>
         ))}
       <DndContext
-        modifiers={modifiers}
         onDragStart={handleDragStart}
         onDragMove={handleDragMove}
         onDragEnd={handleDragEnd}
