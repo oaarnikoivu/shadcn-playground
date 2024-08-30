@@ -18,6 +18,14 @@ export default function BoundingBox() {
 
   const [isDragging, setIsDragging] = useState(false);
 
+  const showSelectedComponents = (show: boolean) => {
+    selectedComponents.forEach((c) => {
+      const el = document.getElementById(c.id);
+      if (!el) return;
+      el.style.opacity = show ? "1" : "0";
+    });
+  };
+
   const handleDragStart = () => {
     setInitialComponentPositions(
       selectedComponents.reduce(
@@ -53,11 +61,7 @@ export default function BoundingBox() {
       ),
     );
 
-    selectedComponents.forEach((c) => {
-      const el = document.getElementById(c.id);
-      if (!el) return;
-      el.style.opacity = "0";
-    });
+    showSelectedComponents(false);
   };
 
   const handleDragEnd = ({ delta }: DragEndEvent) => {
@@ -70,12 +74,7 @@ export default function BoundingBox() {
       });
     });
 
-    selectedComponents.forEach((c) => {
-      const el = document.getElementById(c.id);
-      if (!el) return;
-      el.style.opacity = "1";
-    });
-
+    showSelectedComponents(true);
     setIsDragging(false);
     setInitialComponentPositions({});
     setNewComponentPositions({});
