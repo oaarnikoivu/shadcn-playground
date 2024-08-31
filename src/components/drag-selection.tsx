@@ -1,10 +1,10 @@
+import { useComponentActions, useComponents, useCursorType } from "@/stores";
 import {
   Box,
   boxesIntersect,
   useSelectionContainer,
 } from "@air/react-drag-to-select";
 import { useState } from "react";
-import { useComponentActions, useComponents, useCursorType } from "@/stores";
 
 export default function DragSelection() {
   const components = useComponents();
@@ -40,7 +40,19 @@ export default function DragSelection() {
       });
 
       if (componentsInSelection.length) {
-        selectComponents(componentsInSelection.map((c) => c.id));
+        const selectedComponentIds = componentsInSelection.map((c) => c.id);
+        const groupIds = [
+          ...new Set(componentsInSelection.map((c) => c.groupId)),
+        ];
+        const groupedComponents = components.filter(
+          (c) =>
+            groupIds.includes(c.groupId) && !selectedComponentIds.includes(c.id)
+        );
+        const componentsToSelect = [
+          ...componentsInSelection,
+          ...groupedComponents,
+        ].map((c) => c.id);
+        selectComponents(componentsToSelect);
       }
     },
   });
