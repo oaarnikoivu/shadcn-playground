@@ -40,19 +40,23 @@ export default function DragSelection() {
       });
 
       if (componentsInSelection.length) {
-        const selectedComponentIds = componentsInSelection.map((c) => c.id);
+        let componentsToSelect = componentsInSelection.map((c) => c.id);
+
         const groupIds = [
           ...new Set(componentsInSelection.map((c) => c.groupId)),
-        ];
-        const groupedComponents = components.filter(
-          (c) =>
-            groupIds.includes(c.groupId) &&
-            !selectedComponentIds.includes(c.id),
-        );
-        const componentsToSelect = [
-          ...componentsInSelection,
-          ...groupedComponents,
-        ].map((c) => c.id);
+        ].filter((id) => !!id);
+
+        if (groupIds.length > 0) {
+          const groupedComponents = components.filter(
+            (c) =>
+              groupIds.includes(c.groupId) && !componentsToSelect.includes(c.id)
+          );
+          componentsToSelect = [
+            ...componentsInSelection,
+            ...groupedComponents,
+          ].map((c) => c.id);
+        }
+
         selectComponents(componentsToSelect);
       }
     },

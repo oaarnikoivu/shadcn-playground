@@ -1,4 +1,3 @@
-import React, { useState, useCallback, useEffect } from "react";
 import Draggable from "@/components/draggable.tsx";
 import { useComponentActions, useComponents, useCursorType } from "@/stores";
 import {
@@ -9,19 +8,16 @@ import {
   useSensor,
   useSensors,
 } from "@dnd-kit/core";
-import useSnapModifier from "@/hooks/useSnapModifier.ts";
-import GridOverlay from "@/components/grid-overlay.tsx";
+import React, { useCallback, useEffect, useState } from "react";
 
 export default function Canvas() {
   const components = useComponents();
   const cursorType = useCursorType();
   const { updateCoordinates } = useComponentActions();
 
-  const modifiers = useSnapModifier();
-
   const sensors = useSensors(
     useSensor(MouseSensor, { activationConstraint: { distance: 10 } }),
-    useSensor(TouchSensor),
+    useSensor(TouchSensor)
   );
 
   const [translateX, setTranslateX] = useState(0);
@@ -51,7 +47,7 @@ export default function Canvas() {
         y: event.clientY - translateY,
       });
     },
-    [translateX, translateY, cursorType],
+    [translateX, translateY, cursorType]
   );
 
   const handleMouseMove = useCallback(
@@ -60,7 +56,7 @@ export default function Canvas() {
       setTranslateX(event.clientX - startPan.x);
       setTranslateY(event.clientY - startPan.y);
     },
-    [isPanning, startPan, cursorType],
+    [isPanning, startPan, cursorType]
   );
 
   const handleMouseUp = useCallback(() => {
@@ -90,12 +86,7 @@ export default function Canvas() {
       onMouseUp={handleMouseUp}
       onMouseLeave={handleMouseUp}
     >
-      {modifiers.length > 0 && <GridOverlay gridSize={40} />}
-      <DndContext
-        modifiers={modifiers}
-        sensors={sensors}
-        onDragEnd={handleDragEnd}
-      >
+      <DndContext sensors={sensors} onDragEnd={handleDragEnd}>
         <div
           id="infinite-canvas"
           style={{
