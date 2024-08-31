@@ -4,7 +4,7 @@ export function horizontalSpacing(
   amount: number,
   components: PlaygroundUIComponent[],
 ) {
-  const sortedComponents = [...components].sort(
+  const sortedComponents = components.sort(
     (a, b) => a.coordinates.x - b.coordinates.x,
   );
 
