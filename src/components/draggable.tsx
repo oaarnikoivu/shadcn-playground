@@ -57,14 +57,6 @@ export default function Draggable({ component }: DraggableProps) {
           : {}),
       }}
       onClick={handleSelectComponent}
-      // onMouseMove={() => {
-      //   if (!component.groupId) return;
-      //   selectComponents(
-      //     components
-      //       .filter((c) => c.groupId === component.groupId)
-      //       .map((c) => c.id)
-      //   );
-      // }}
       {...listeners}
       {...attributes}
     >
