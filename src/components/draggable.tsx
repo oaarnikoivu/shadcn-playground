@@ -1,9 +1,9 @@
-import { cn } from "@/lib/utils";
-import { PlaygroundUIComponent } from "@/types/component";
-import { useComponentActions, useComponents } from "@/stores";
-import useClickOutsideDraggable from "@/hooks/useClickOutsideDraggable.ts";
-import { useDraggable } from "@dnd-kit/core";
 import CanvasComponent from "@/components/canvas-component.tsx";
+import useClickOutsideDraggable from "@/hooks/useClickOutsideDraggable.ts";
+import { cn } from "@/lib/utils";
+import { useComponentActions, useComponents } from "@/stores";
+import { PlaygroundUIComponent } from "@/types/component";
+import { useDraggable } from "@dnd-kit/core";
 
 type DraggableProps = {
   component: PlaygroundUIComponent;
@@ -15,7 +15,7 @@ export default function Draggable({ component }: DraggableProps) {
     useComponentActions();
 
   const { attributes, listeners, setNodeRef, transform } = useDraggable({
-    id: component.id,
+    id: component.groupId ?? component.id,
   });
 
   useClickOutsideDraggable(component);
@@ -31,7 +31,7 @@ export default function Draggable({ component }: DraggableProps) {
       selectComponents(
         components
           .filter((c) => c.groupId === component.groupId)
-          .map((c) => c.id),
+          .map((c) => c.id)
       );
     } else {
       selectComponent(component.id);
@@ -44,7 +44,7 @@ export default function Draggable({ component }: DraggableProps) {
       ref={setNodeRef}
       className={cn(
         component.selected &&
-          "ring-2 outline-none ring-ring ring-offset-background ring-offset-2 rounded-md",
+          "ring-2 outline-none ring-ring ring-offset-background ring-offset-2 rounded-md"
       )}
       style={{
         position: "absolute",
@@ -57,6 +57,14 @@ export default function Draggable({ component }: DraggableProps) {
           : {}),
       }}
       onClick={handleSelectComponent}
+      // onMouseMove={() => {
+      //   if (!component.groupId) return;
+      //   selectComponents(
+      //     components
+      //       .filter((c) => c.groupId === component.groupId)
+      //       .map((c) => c.id)
+      //   );
+      // }}
       {...listeners}
       {...attributes}
     >

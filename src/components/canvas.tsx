@@ -3,6 +3,7 @@ import { useComponentActions, useComponents, useCursorType } from "@/stores";
 import {
   DndContext,
   DragEndEvent,
+  DragStartEvent,
   MouseSensor,
   TouchSensor,
   useSensor,
@@ -13,7 +14,8 @@ import React, { useCallback, useEffect, useState } from "react";
 export default function Canvas() {
   const components = useComponents();
   const cursorType = useCursorType();
-  const { updateCoordinates } = useComponentActions();
+  const { updateCoordinates, selectComponent, selectComponents } =
+    useComponentActions();
 
   const sensors = useSensors(
     useSensor(MouseSensor, { activationConstraint: { distance: 10 } }),
@@ -25,16 +27,46 @@ export default function Canvas() {
   const [isPanning, setIsPanning] = useState(false);
   const [startPan, setStartPan] = useState({ x: 0, y: 0 });
 
+  const handleDragStart = ({ active }: DragStartEvent) => {
+    const componentToSelect = components.find(
+      (c) => c.id === active.id || c.groupId === active.id
+    );
+    if (!componentToSelect) return;
+
+    if (componentToSelect.groupId) {
+      const componentsToSelect = components.filter(
+        (c) => c.groupId === componentToSelect.groupId
+      );
+      selectComponents(componentsToSelect.map((c) => c.id));
+    } else {
+      selectComponent(componentToSelect.id);
+    }
+  };
+
   const handleDragEnd = ({ delta, active }: DragEndEvent) => {
     if (!delta.x && !delta.y) return;
 
-    const componentToUpdate = components.find((c) => c.id === active.id);
+    const componentToUpdate = components.find(
+      (c) => c.id === active.id || c.groupId === active.id
+    );
     if (!componentToUpdate) return;
 
-    updateCoordinates(componentToUpdate.id, {
-      x: componentToUpdate.coordinates.x + delta.x,
-      y: componentToUpdate.coordinates.y + delta.y,
-    });
+    if (componentToUpdate.groupId) {
+      const componentsToUpdate = components.filter(
+        (c) => c.groupId === componentToUpdate.groupId
+      );
+      componentsToUpdate.forEach((c) => {
+        updateCoordinates(c.id, {
+          x: c.coordinates.x + delta.x,
+          y: c.coordinates.y + delta.y,
+        });
+      });
+    } else {
+      updateCoordinates(componentToUpdate.id, {
+        x: componentToUpdate.coordinates.x + delta.x,
+        y: componentToUpdate.coordinates.y + delta.y,
+      });
+    }
   };
 
   const handleMouseDown = useCallback(
@@ -86,7 +118,11 @@ export default function Canvas() {
       onMouseUp={handleMouseUp}
       onMouseLeave={handleMouseUp}
     >
-      <DndContext sensors={sensors} onDragEnd={handleDragEnd}>
+      <DndContext
+        sensors={sensors}
+        onDragStart={handleDragStart}
+        onDragEnd={handleDragEnd}
+      >
         <div
           id="infinite-canvas"
           style={{
