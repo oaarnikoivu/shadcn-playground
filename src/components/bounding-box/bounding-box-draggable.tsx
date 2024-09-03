@@ -1,10 +1,12 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { Box } from "@air/react-drag-to-select";
-import { useStore } from "@/stores";
+import { useSelected, useStore } from "@/stores";
 import createBoundingBox from "@/utils/createBoundingBox.ts";
 import { useDraggable } from "@dnd-kit/core";
+import { cn } from "@/lib/utils";
 
 export default function BoundingBoxDraggable() {
+  const selectedComponents = useSelected();
   const observer = useRef<MutationObserver | null>(null);
   const [boundingBox, setBoundingBox] = useState<Box | null>(null);
 
@@ -38,6 +40,17 @@ export default function BoundingBoxDraggable() {
     };
   }, []);
 
+  const boundingBoxStyle = useMemo(() => {
+    if (selectedComponents.length > 0) {
+      const groupId = selectedComponents[0].groupId;
+      const allHaveSameGroupId =
+        !!groupId && selectedComponents.every((c) => c.groupId === groupId);
+      return allHaveSameGroupId
+        ? "outline-dashed outline-muted-foreground"
+        : "outline-dotted";
+    }
+  }, [selectedComponents]);
+
   const { attributes, listeners, setNodeRef, transform } = useDraggable({
     id: "bbox",
   });
@@ -48,7 +61,10 @@ export default function BoundingBoxDraggable() {
     <div
       id="bbox"
       ref={setNodeRef}
-      className="z-10 rounded-xs outline-primary outline-dashed outline-offset-[6px] cursor-grab"
+      className={cn(
+        "z-10 rounded-xs outline-primary outline-[2px] cursor-grab",
+        boundingBoxStyle
+      )}
       style={{
         position: "absolute",
         top: `${boundingBox.top}px`,
