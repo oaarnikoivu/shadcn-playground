@@ -62,6 +62,8 @@ export default function DragSelection() {
 
         selectComponents(componentsToSelect);
       }
+
+      setSelectionBox(null);
     },
   });
 

@@ -5,14 +5,17 @@ import createBoundingBox from "@/utils/createBoundingBox.ts";
 import { useDraggable } from "@dnd-kit/core";
 import { cn } from "@/lib/utils";
 import isGroup from "@/utils/isGroup";
+import useCursorStyle from "@/hooks/useCursorStyle";
 
 export default function BoundingBoxDraggable() {
   const selectedComponents = useSelected();
+  const cursorStyle = useCursorStyle();
+
   const observer = useRef<MutationObserver | null>(null);
   const [boundingBox, setBoundingBox] = useState<Box | null>(null);
 
   useEffect(() => {
-    const targetNode = document.getElementById("canvas");
+    const targetNode = document.getElementById("infinite-canvas");
     if (!targetNode) return;
 
     observer.current = new MutationObserver(() => {
@@ -53,7 +56,7 @@ export default function BoundingBoxDraggable() {
     id: "bbox",
   });
 
-  if (!boundingBox) return null;
+  if (!boundingBox || ["grab", "grabbing"].includes(cursorStyle)) return null;
 
   return (
     <div

@@ -10,6 +10,7 @@ export type ComponentSlice = {
     selectComponent: (id: string) => void;
     selectComponents: (ids: string[]) => void;
     unselectComponent: (id: string) => void;
+    unselectAllComponents: () => void;
     copyComponent: (id: string) => void;
     groupComponents: (ids: string[]) => void;
     updateCoordinates: (
@@ -55,6 +56,10 @@ export const createComponentSlice: StateCreator<
         ],
       });
     },
+    unselectAllComponents: () =>
+      set({
+        components: get().components.map((c) => ({ ...c, selected: false })),
+      }),
     copyComponent: (id: string) => {
       const component = get().components.find((c) => c.id === id);
       if (component) {
