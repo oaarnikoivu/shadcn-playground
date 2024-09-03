@@ -1,3 +1,4 @@
+import useCursorStyle from "@/hooks/useCursorStyle";
 import { useComponentActions, useComponents, useCursorType } from "@/stores";
 import {
   Box,
@@ -10,6 +11,7 @@ export default function DragSelection() {
   const components = useComponents();
   const cursorType = useCursorType();
   const { selectComponents } = useComponentActions();
+  const cursorStyle = useCursorStyle();
 
   const [selectionBox, setSelectionBox] = useState<Box | null>(null);
 
@@ -63,7 +65,8 @@ export default function DragSelection() {
     },
   });
 
-  if (cursorType !== "cursor") return null;
+  if (cursorType !== "cursor" || ["grab", "grabbing"].includes(cursorStyle))
+    return null;
 
   return <DragSelection />;
 }

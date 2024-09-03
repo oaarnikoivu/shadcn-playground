@@ -9,7 +9,7 @@ import {
   useSensor,
   useSensors,
 } from "@dnd-kit/core";
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 
 export default function Canvas() {
   const components = useComponents();
@@ -22,10 +22,54 @@ export default function Canvas() {
     useSensor(TouchSensor),
   );
 
-  const [translateX, setTranslateX] = useState(0);
-  const [translateY, setTranslateY] = useState(0);
-  const [isPanning, setIsPanning] = useState(false);
-  const [startPan, setStartPan] = useState({ x: 0, y: 0 });
+  const isHoldingSpacebarRef = useRef(false);
+  const isPanningRef = useRef(false);
+  const startPanRef = useRef({ x: 0, y: 0 });
+
+  const [translate, setTranslate] = useState({ x: 0, y: 0 });
+
+  useEffect(() => {
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === " ") {
+        event.preventDefault();
+        isHoldingSpacebarRef.current = true;
+        if (document.body.style.cursor !== "grabbing") {
+          document.body.style.cursor = "grab";
+        }
+      }
+    };
+
+    const handleKeyUp = (event: KeyboardEvent) => {
+      if (event.key === " ") {
+        event.preventDefault();
+        isHoldingSpacebarRef.current = false;
+        document.body.style.cursor = isPanningRef.current ? "grabbing" : "auto";
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+    window.addEventListener("keyup", handleKeyUp);
+
+    return () => {
+      window.removeEventListener("keydown", handleKeyDown);
+      window.removeEventListener("keyup", handleKeyUp);
+    };
+  }, []);
+
+  useEffect(() => {
+    const handleWheel = (event: WheelEvent) => {
+      setTranslate((prev) => ({
+        x: prev.x - event.deltaX,
+        y: prev.y - event.deltaY,
+      }));
+    };
+
+    window.addEventListener("wheel", handleWheel);
+
+    return () => {
+      window.removeEventListener("wheel", handleWheel);
+    };
+  }, []);
 
   const handleDragStart = ({ active }: DragStartEvent) => {
     const componentToSelect = components.find(
@@ -71,43 +115,39 @@ export default function Canvas() {
 
   const handleMouseDown = useCallback(
     (event: React.MouseEvent) => {
-      if (cursorType === "cursor") return;
+      if (cursorType === "cursor" && !isHoldingSpacebarRef.current) return;
       document.body.style.cursor = "grabbing";
-      setIsPanning(true);
-      setStartPan({
-        x: event.clientX - translateX,
-        y: event.clientY - translateY,
-      });
+      isPanningRef.current = true;
+      startPanRef.current = {
+        x: event.clientX - translate.x,
+        y: event.clientY - translate.y,
+      };
     },
-    [translateX, translateY, cursorType],
+    [translate, cursorType],
   );
 
   const handleMouseMove = useCallback(
     (event: React.MouseEvent) => {
-      if (!isPanning || cursorType === "cursor") return;
-      setTranslateX(event.clientX - startPan.x);
-      setTranslateY(event.clientY - startPan.y);
+      if (cursorType === "cursor" && !isHoldingSpacebarRef.current) return;
+      if (!isPanningRef.current) return;
+
+      setTranslate({
+        x: event.clientX - startPanRef.current.x,
+        y: event.clientY - startPanRef.current.y,
+      });
     },
-    [isPanning, startPan, cursorType],
+    [cursorType],
   );
 
   const handleMouseUp = useCallback(() => {
-    if (cursorType === "cursor") return;
-    document.body.style.cursor = "grab";
-    setIsPanning(false);
+    if (cursorType === "cursor" && !isHoldingSpacebarRef.current) return;
+    if (cursorType === "grab") {
+      document.body.style.cursor = "grab";
+    } else {
+      document.body.style.cursor = "auto";
+    }
+    isPanningRef.current = false;
   }, [cursorType]);
-
-  const handleWheel = useCallback((event: WheelEvent) => {
-    setTranslateX((prev) => prev - event.deltaX);
-    setTranslateY((prev) => prev - event.deltaY);
-  }, []);
-
-  useEffect(() => {
-    window.addEventListener("wheel", handleWheel);
-    return () => {
-      window.removeEventListener("wheel", handleWheel);
-    };
-  }, [handleWheel]);
 
   return (
     <main
@@ -126,7 +166,7 @@ export default function Canvas() {
         <div
           id="infinite-canvas"
           style={{
-            transform: `translate(${translateX}px, ${translateY}px)`,
+            transform: `translate(${translate.x}px, ${translate.y}px)`,
             transformOrigin: "0 0",
             position: "relative",
             width: "100%",

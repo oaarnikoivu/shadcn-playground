@@ -101,6 +101,7 @@ export function verticalSpacing(
   const groupedComponents = groupByGroups(sortedComponents);
 
   if (Object.keys(groupedComponents).length > 0) {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     Object.entries(groupedComponents).forEach(([_, components], index) => {
       if (index === 0) return;
 
