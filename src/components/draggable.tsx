@@ -31,7 +31,7 @@ export default function Draggable({ component }: DraggableProps) {
       selectComponents(
         components
           .filter((c) => c.groupId === component.groupId)
-          .map((c) => c.id)
+          .map((c) => c.id),
       );
     } else {
       selectComponent(component.id);
@@ -44,7 +44,7 @@ export default function Draggable({ component }: DraggableProps) {
       ref={setNodeRef}
       className={cn(
         component.selected &&
-          "ring-2 outline-none ring-ring ring-offset-background ring-offset-2 rounded-md"
+          "ring-2 outline-none ring-ring ring-offset-background ring-offset-2 rounded-md",
       )}
       style={{
         position: "absolute",

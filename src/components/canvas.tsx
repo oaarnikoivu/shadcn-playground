@@ -19,7 +19,7 @@ export default function Canvas() {
 
   const sensors = useSensors(
     useSensor(MouseSensor, { activationConstraint: { distance: 10 } }),
-    useSensor(TouchSensor)
+    useSensor(TouchSensor),
   );
 
   const [translateX, setTranslateX] = useState(0);
@@ -29,13 +29,13 @@ export default function Canvas() {
 
   const handleDragStart = ({ active }: DragStartEvent) => {
     const componentToSelect = components.find(
-      (c) => c.id === active.id || c.groupId === active.id
+      (c) => c.id === active.id || c.groupId === active.id,
     );
     if (!componentToSelect) return;
 
     if (componentToSelect.groupId) {
       const componentsToSelect = components.filter(
-        (c) => c.groupId === componentToSelect.groupId
+        (c) => c.groupId === componentToSelect.groupId,
       );
       selectComponents(componentsToSelect.map((c) => c.id));
     } else {
@@ -47,13 +47,13 @@ export default function Canvas() {
     if (!delta.x && !delta.y) return;
 
     const componentToUpdate = components.find(
-      (c) => c.id === active.id || c.groupId === active.id
+      (c) => c.id === active.id || c.groupId === active.id,
     );
     if (!componentToUpdate) return;
 
     if (componentToUpdate.groupId) {
       const componentsToUpdate = components.filter(
-        (c) => c.groupId === componentToUpdate.groupId
+        (c) => c.groupId === componentToUpdate.groupId,
       );
       componentsToUpdate.forEach((c) => {
         updateCoordinates(c.id, {
@@ -79,7 +79,7 @@ export default function Canvas() {
         y: event.clientY - translateY,
       });
     },
-    [translateX, translateY, cursorType]
+    [translateX, translateY, cursorType],
   );
 
   const handleMouseMove = useCallback(
@@ -88,7 +88,7 @@ export default function Canvas() {
       setTranslateX(event.clientX - startPan.x);
       setTranslateY(event.clientY - startPan.y);
     },
-    [isPanning, startPan, cursorType]
+    [isPanning, startPan, cursorType],
   );
 
   const handleMouseUp = useCallback(() => {

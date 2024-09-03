@@ -62,7 +62,7 @@ export default function Align() {
   const { updateCoordinates } = useComponentActions();
 
   const handleAlign = (
-    value: (typeof AlignOptions)[keyof typeof AlignOptions]
+    value: (typeof AlignOptions)[keyof typeof AlignOptions],
   ) => {
     const alignedComponents = value.handler(selectedComponents);
     alignedComponents.forEach((c) => {

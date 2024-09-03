@@ -49,7 +49,8 @@ export default function DragSelection() {
         if (groupIds.length > 0) {
           const groupedComponents = components.filter(
             (c) =>
-              groupIds.includes(c.groupId) && !componentsToSelect.includes(c.id)
+              groupIds.includes(c.groupId) &&
+              !componentsToSelect.includes(c.id),
           );
           componentsToSelect = [
             ...componentsInSelection,

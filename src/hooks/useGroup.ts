@@ -7,7 +7,7 @@ export default function useGroup() {
 
   const group = useCallback(
     () => groupComponents(selectedComponents.map((component) => component.id)),
-    [groupComponents, selectedComponents]
+    [groupComponents, selectedComponents],
   );
 
   useEffect(() => {

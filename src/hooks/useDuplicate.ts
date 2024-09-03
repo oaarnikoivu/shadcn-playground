@@ -23,5 +23,5 @@ export default function useDuplicate() {
     };
   }, [duplicate]);
 
-  return duplicate
+  return duplicate;
 }

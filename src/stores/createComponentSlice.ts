@@ -13,7 +13,7 @@ export type ComponentSlice = {
     groupComponents: (ids: string[]) => void;
     updateCoordinates: (
       id: string,
-      coordinates: { x: number; y: number }
+      coordinates: { x: number; y: number },
     ) => void;
     updateProperties: (id: string, properties: Properties) => void;
     clearComponents: () => void;
@@ -35,7 +35,7 @@ export const createComponentSlice: StateCreator<
     selectComponent: (id: string) =>
       set((state) => ({
         components: state.components.map((c) =>
-          c.id === id ? { ...c, selected: true } : { ...c, selected: false }
+          c.id === id ? { ...c, selected: true } : { ...c, selected: false },
         ),
       })),
     selectComponents: (ids: string[]) =>
@@ -49,7 +49,7 @@ export const createComponentSlice: StateCreator<
       set({
         components: [
           ...get().components.map((c) =>
-            c.id === id ? { ...c, selected: false } : c
+            c.id === id ? { ...c, selected: false } : c,
           ),
         ],
       });
@@ -60,7 +60,7 @@ export const createComponentSlice: StateCreator<
         set({
           components: [
             ...get().components.map((c) =>
-              c.id === id ? { ...c, selected: false } : c
+              c.id === id ? { ...c, selected: false } : c,
             ),
             {
               ...component,
@@ -79,27 +79,27 @@ export const createComponentSlice: StateCreator<
       const components = get().components;
       const selectedComponents = components.filter((c) => ids.includes(c.id));
       const allHaveSameGroupId = selectedComponents.every(
-        (c) => c.groupId && c.groupId === selectedComponents[0].groupId
+        (c) => c.groupId && c.groupId === selectedComponents[0].groupId,
       );
 
       const newGroupId = allHaveSameGroupId ? undefined : crypto.randomUUID();
 
       set((state) => ({
         components: state.components.map((c) =>
-          ids.includes(c.id) ? { ...c, groupId: newGroupId } : c
+          ids.includes(c.id) ? { ...c, groupId: newGroupId } : c,
         ),
       }));
     },
     updateCoordinates: (id: string, coordinates: { x: number; y: number }) =>
       set((state) => ({
         components: state.components.map((c) =>
-          c.id === id ? { ...c, coordinates } : c
+          c.id === id ? { ...c, coordinates } : c,
         ),
       })),
     updateProperties: (id: string, properties: Properties) => {
       set({
         components: get().components.map((c) =>
-          c.id === id ? { ...c, properties } : c
+          c.id === id ? { ...c, properties } : c,
         ),
       });
     },

@@ -63,7 +63,7 @@ export default function BoundingBoxDraggable() {
       ref={setNodeRef}
       className={cn(
         "z-10 rounded-xs outline-primary outline-[2px] cursor-grab",
-        boundingBoxStyle
+        boundingBoxStyle,
       )}
       style={{
         position: "absolute",

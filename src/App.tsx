@@ -8,10 +8,12 @@ import { Toaster } from "@/components/ui/sonner.tsx";
 import { CheckCircle2 } from "lucide-react";
 import useInitializeStoreFromLink from "@/hooks/useInitializeStoreFromLink.ts";
 import useTheme from "@/hooks/useTheme.ts";
+import useGlobalKeyboardControls from "./hooks/useGlobalKeyboardControls";
 
 function App() {
   useInitializeStoreFromLink();
   useTheme();
+  useGlobalKeyboardControls();
 
   return (
     <>
