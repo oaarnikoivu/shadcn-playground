@@ -9,7 +9,14 @@ import {
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group.tsx";
 import { useComponentActions, useSelected } from "@/stores";
 import Section from "@/components/editor/section.tsx";
-import { alignCenterHorizontal, alignCenterVertical } from "@/utils/align.ts";
+import {
+  alignCenterHorizontal,
+  alignCenterVertical,
+  alignEndHorizontal,
+  alignEndVertical,
+  alignStartHorizontal,
+  alignStartVertical,
+} from "@/utils/align.ts";
 import {
   Tooltip,
   TooltipContent,
@@ -30,22 +37,22 @@ const AlignOptions = {
   },
   "align-end-horizontal": {
     icon: AlignEndHorizontal,
-    handler: null,
+    handler: alignEndHorizontal,
     tooltip: "Align end horizontally",
   },
   "align-end-vertical": {
     icon: AlignEndVertical,
-    handler: null,
+    handler: alignEndVertical,
     tooltip: "Align end vertically",
   },
   "align-start-horizontal": {
     icon: AlignStartHorizontal,
-    handler: null,
+    handler: alignStartHorizontal,
     tooltip: "Align start horizontally",
   },
   "align-start-vertical": {
     icon: AlignStartVertical,
-    handler: null,
+    handler: alignStartVertical,
     tooltip: "Align start vertically",
   },
 };
@@ -57,7 +64,6 @@ export default function Align() {
   const handleAlign = (
     value: (typeof AlignOptions)[keyof typeof AlignOptions]
   ) => {
-    if (!value.handler) return;
     const alignedComponents = value.handler(selectedComponents);
     alignedComponents.forEach((c) => {
       updateCoordinates(c.id, {
