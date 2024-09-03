@@ -27,37 +27,45 @@ export default function BoundingBox() {
   };
 
   const handleDragStart = () => {
-    initialComponentPositionsRef.current = selectedComponents.reduce(
-      (acc, c) => {
-        const el = document.getElementById(c.id);
-        if (el) {
-          const rect = el.getBoundingClientRect();
-          acc[c.id] = {
-            left: rect.left + window.scrollX,
-            top: rect.top + window.scrollY,
-          };
-        }
-        return acc;
-      },
-      {} as Record<string, { left: number; top: number }>,
-    );
+    const newPositions: typeof newComponentPositions = {};
+
+    selectedComponents.forEach((c) => {
+      const el = document.getElementById(c.id);
+      if (el) {
+        const rect = el.getBoundingClientRect();
+        newPositions[c.id] = {
+          left: rect.left + window.scrollX,
+          top: rect.top + window.scrollY,
+        };
+      }
+    });
+
+    initialComponentPositionsRef.current = newPositions;
   };
+
+  let animationFrameId: number | null = null;
 
   const handleDragMove = ({ delta }: DragMoveEvent) => {
     isDraggingRef.current = true;
 
-    setNewComponentPositions(
-      selectedComponents.reduce(
-        (acc, c) => {
-          acc[c.id] = {
-            left: initialComponentPositionsRef.current[c.id].left + delta.x,
-            top: initialComponentPositionsRef.current[c.id].top + delta.y,
-          };
-          return acc;
-        },
-        {} as Record<string, { left: number; top: number }>,
-      ),
-    );
+    if (animationFrameId) {
+      cancelAnimationFrame(animationFrameId);
+    }
+
+    animationFrameId = requestAnimationFrame(() => {
+      setNewComponentPositions(
+        selectedComponents.reduce(
+          (acc, c) => {
+            acc[c.id] = {
+              left: initialComponentPositionsRef.current[c.id].left + delta.x,
+              top: initialComponentPositionsRef.current[c.id].top + delta.y,
+            };
+            return acc;
+          },
+          {} as Record<string, { left: number; top: number }>,
+        ),
+      );
+    });
 
     showSelectedComponents(false);
   };
