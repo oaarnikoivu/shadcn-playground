@@ -1,4 +1,5 @@
 import { PlaygroundUIComponent, Properties } from "@/types/component";
+import isGroup from "@/utils/isGroup";
 import { StateCreator } from "zustand";
 
 export type ComponentSlice = {
@@ -78,11 +79,10 @@ export const createComponentSlice: StateCreator<
     groupComponents: (ids: string[]) => {
       const components = get().components;
       const selectedComponents = components.filter((c) => ids.includes(c.id));
-      const allHaveSameGroupId = selectedComponents.every(
-        (c) => c.groupId && c.groupId === selectedComponents[0].groupId,
-      );
 
-      const newGroupId = allHaveSameGroupId ? undefined : crypto.randomUUID();
+      const newGroupId = isGroup(selectedComponents)
+        ? undefined
+        : crypto.randomUUID();
 
       set((state) => ({
         components: state.components.map((c) =>

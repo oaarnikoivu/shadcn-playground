@@ -4,6 +4,7 @@ import { Input } from "@/components/ui/input.tsx";
 import { Label } from "@/components/ui/label.tsx";
 import React from "react";
 import { horizontalSpacing, verticalSpacing } from "@/utils/spacing.ts";
+import isGroup from "@/utils/isGroup";
 
 const spacingTypes = ["horizontal", "vertical"] as const;
 
@@ -49,7 +50,8 @@ export default function Spacing() {
     });
   };
 
-  if (componentsToUpdate.length <= 1) return null;
+  if (componentsToUpdate.length <= 1 || isGroup(componentsToUpdate))
+    return null;
 
   return (
     <Section title="Spacing (px)">

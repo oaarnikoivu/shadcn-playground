@@ -4,6 +4,7 @@ import { useSelected, useStore } from "@/stores";
 import createBoundingBox from "@/utils/createBoundingBox.ts";
 import { useDraggable } from "@dnd-kit/core";
 import { cn } from "@/lib/utils";
+import isGroup from "@/utils/isGroup";
 
 export default function BoundingBoxDraggable() {
   const selectedComponents = useSelected();
@@ -42,10 +43,7 @@ export default function BoundingBoxDraggable() {
 
   const boundingBoxStyle = useMemo(() => {
     if (selectedComponents.length > 0) {
-      const groupId = selectedComponents[0].groupId;
-      const allHaveSameGroupId =
-        !!groupId && selectedComponents.every((c) => c.groupId === groupId);
-      return allHaveSameGroupId
+      return isGroup(selectedComponents)
         ? "outline-dashed outline-muted-foreground"
         : "outline-dotted";
     }

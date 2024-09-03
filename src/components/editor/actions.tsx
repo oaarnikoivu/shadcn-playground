@@ -11,6 +11,7 @@ import Section from "@/components/editor/section.tsx";
 import useDuplicate from "@/hooks/useDuplicate";
 import useGroup from "@/hooks/useGroup";
 import useRemove from "@/hooks/useRemove";
+import isGroup from "@/utils/isGroup";
 
 export default function Actions() {
   const selectedComponents = useSelected();
@@ -19,9 +20,7 @@ export default function Actions() {
   const group = useGroup();
   const remove = useRemove();
 
-  const groupId = selectedComponents[0]?.groupId;
-  const allHaveSameGroupId =
-    !!groupId && selectedComponents.every((c) => c.groupId === groupId);
+  const sameGroup = isGroup(selectedComponents);
 
   const actions = {
     copy: {
@@ -32,8 +31,8 @@ export default function Actions() {
     },
     group: {
       displayName: "Group",
-      icon: allHaveSameGroupId ? Ungroup : Group,
-      tooltip: allHaveSameGroupId ? "Ungroup - Ctrl + G" : "Group - Ctrl + G",
+      icon: sameGroup ? Ungroup : Group,
+      tooltip: sameGroup ? "Ungroup - Ctrl + G" : "Group - Ctrl + G",
       action: group,
     },
     delete: {
