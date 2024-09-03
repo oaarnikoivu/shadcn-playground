@@ -1,3 +1,4 @@
+import Section from "@/components/editor/section.tsx";
 import Size from "@/components/editor/size.tsx";
 import { Input } from "@/components/ui/input.tsx";
 import { useComponentActions, useSelectedByType } from "@/stores";
@@ -6,7 +7,7 @@ import {
   InputProperties as TInputProperties,
 } from "@/types/component.ts";
 import React, { useMemo } from "react";
-import Section from "@/components/editor/section.tsx";
+import Value from "./value";
 
 export default function InputProperties() {
   const componentsToUpdate = useSelectedByType("input");
@@ -52,6 +53,7 @@ export default function InputProperties() {
 
   return (
     <>
+      <Value />
       <Size />
       <Section title="Placeholder">
         <Input value={placeholder} onChange={handlePlaceholderChange} />

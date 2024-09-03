@@ -1,6 +1,6 @@
+import { Button } from "@/components/ui/button.tsx";
 import { SUPPORTED_COMPONENTS } from "@/constants";
 import { VariantProps } from "class-variance-authority";
-import { Button } from "@/components/ui/button.tsx";
 
 export type Coordinate = {
   x: number;
@@ -22,7 +22,12 @@ export interface InputProperties extends CommonProperties {
   placeholder?: string;
 }
 
-export type Properties = ButtonProperties | InputProperties;
+export interface AvatarProperties {
+  source?: string;
+  fallback?: string;
+}
+
+export type Properties = ButtonProperties | InputProperties | AvatarProperties;
 
 export type PlaygroundUIComponent = {
   id: string;

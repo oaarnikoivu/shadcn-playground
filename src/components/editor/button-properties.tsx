@@ -1,14 +1,15 @@
+import Section from "@/components/editor/section.tsx";
+import { Button } from "@/components/ui/button.tsx";
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group.tsx";
 import { BUTTON_SIZES, BUTTON_VARIANTS } from "@/constants.ts";
-import { VariantProps } from "class-variance-authority";
-import { Button } from "@/components/ui/button.tsx";
 import { useComponentActions, useSelectedByType } from "@/stores";
 import {
   PlaygroundUIComponent,
   ButtonProperties as TButtonProperties,
 } from "@/types/component.ts";
-import Section from "@/components/editor/section.tsx";
+import { VariantProps } from "class-variance-authority";
 import { useMemo } from "react";
+import Value from "./value";
 
 export default function ButtonProperties() {
   const componentsToUpdate = useSelectedByType("button");
@@ -87,6 +88,7 @@ export default function ButtonProperties() {
 
   return (
     <>
+      <Value />
       <Section title="Size">
         <ToggleGroup
           type="single"
