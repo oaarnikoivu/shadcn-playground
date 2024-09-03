@@ -23,6 +23,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "../ui/tooltip";
+import { PlaygroundUIComponent } from "@/types/component";
 
 const AlignOptions = {
   "align-center-horizontal": {
@@ -59,18 +60,21 @@ const AlignOptions = {
 
 export default function Align() {
   const selectedComponents = useSelected();
-  const { updateCoordinates } = useComponentActions();
+  const { updateComponents } = useComponentActions();
 
   const handleAlign = (
     value: (typeof AlignOptions)[keyof typeof AlignOptions],
   ) => {
     const alignedComponents = value.handler(selectedComponents);
-    alignedComponents.forEach((c) => {
-      updateCoordinates(c.id, {
-        x: c.coordinates.x,
-        y: c.coordinates.y,
-      });
-    });
+    updateComponents(
+      alignedComponents.reduce(
+        (acc, c) => {
+          acc[c.id] = c;
+          return acc;
+        },
+        {} as Record<string, PlaygroundUIComponent>,
+      ),
+    );
   };
 
   if (selectedComponents.length === 1) return null;

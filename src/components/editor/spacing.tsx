@@ -5,12 +5,13 @@ import { Label } from "@/components/ui/label.tsx";
 import React from "react";
 import { horizontalSpacing, verticalSpacing } from "@/utils/spacing.ts";
 import isGroup from "@/utils/isGroup";
+import { PlaygroundUIComponent } from "@/types/component";
 
 const spacingTypes = ["horizontal", "vertical"] as const;
 
 export default function Spacing() {
   const componentsToUpdate = useSelected();
-  const { updateCoordinates } = useComponentActions();
+  const { updateComponents } = useComponentActions();
 
   const handleHorizontalSpacingChange = (
     e: React.ChangeEvent<HTMLInputElement>,
@@ -26,9 +27,15 @@ export default function Spacing() {
       })),
     );
 
-    spacedComponents.forEach((c) => {
-      updateCoordinates(c.id, { x: c.coordinates.x, y: c.coordinates.y });
-    });
+    updateComponents(
+      spacedComponents.reduce(
+        (acc, c) => {
+          acc[c.id] = c;
+          return acc;
+        },
+        {} as Record<string, PlaygroundUIComponent>,
+      ),
+    );
   };
 
   const handleVerticalSpacingChange = (
@@ -45,9 +52,15 @@ export default function Spacing() {
       })),
     );
 
-    spacedComponents.forEach((c) => {
-      updateCoordinates(c.id, { x: c.coordinates.x, y: c.coordinates.y });
-    });
+    updateComponents(
+      spacedComponents.reduce(
+        (acc, c) => {
+          acc[c.id] = c;
+          return acc;
+        },
+        {} as Record<string, PlaygroundUIComponent>,
+      ),
+    );
   };
 
   if (componentsToUpdate.length <= 1 || isGroup(componentsToUpdate))

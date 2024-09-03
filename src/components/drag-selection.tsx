@@ -60,7 +60,7 @@ export default function DragSelection() {
           ].map((c) => c.id);
         }
 
-        selectComponents(componentsToSelect);
+        selectComponents(componentsToSelect, true);
       }
 
       setSelectionBox(null);

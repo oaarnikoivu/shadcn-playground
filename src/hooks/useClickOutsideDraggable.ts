@@ -5,7 +5,7 @@ import { PlaygroundUIComponent } from "@/types/component.ts";
 export default function useClickOutsideDraggable(
   component: PlaygroundUIComponent,
 ) {
-  const { unselectComponent } = useComponentActions();
+  const { selectComponents } = useComponentActions();
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -23,7 +23,7 @@ export default function useClickOutsideDraggable(
         !isInsideEditor &&
         component?.selected
       ) {
-        unselectComponent(component.id);
+        selectComponents([component.id], false);
       }
     };
 
@@ -32,5 +32,5 @@ export default function useClickOutsideDraggable(
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
-  }, [component, unselectComponent]);
+  }, [component, selectComponents]);
 }

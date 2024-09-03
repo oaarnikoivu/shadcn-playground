@@ -3,11 +3,11 @@ import { useCallback, useEffect } from "react";
 
 export default function useDuplicate() {
   const selectedComponents = useSelected();
-  const { copyComponent } = useComponentActions();
+  const { copyComponents } = useComponentActions();
 
   const duplicate = useCallback(() => {
-    selectedComponents.forEach((component) => copyComponent(component.id));
-  }, [copyComponent, selectedComponents]);
+    copyComponents(selectedComponents.map((c) => c.id));
+  }, [copyComponents, selectedComponents]);
 
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {

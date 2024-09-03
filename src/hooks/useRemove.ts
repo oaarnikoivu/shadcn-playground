@@ -2,10 +2,10 @@ import { useComponentActions, useSelected } from "@/stores";
 
 export default function useDelete() {
   const selectedComponents = useSelected();
-  const { removeComponent } = useComponentActions();
+  const { removeComponents } = useComponentActions();
 
   const remove = () => {
-    selectedComponents.forEach((component) => removeComponent(component.id));
+    removeComponents(selectedComponents.map((component) => component.id));
   };
 
   return remove;

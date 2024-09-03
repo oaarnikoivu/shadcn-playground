@@ -20,20 +20,22 @@ import {
 import { useComponentActions } from "@/stores";
 
 export default function ComponentsSheet() {
-  const { addComponent } = useComponentActions();
+  const { addComponents } = useComponentActions();
 
   const handleSelectComponent = (componentType: string) =>
-    addComponent({
-      id: crypto.randomUUID(),
-      type: componentType as (typeof SUPPORTED_COMPONENTS)[number],
-      // TODO: get valid coordinates
-      coordinates: { x: 0, y: 88 },
-      properties: {
-        size: "default",
-        variant: "default",
-        value: "Hi, world",
+    addComponents([
+      {
+        id: crypto.randomUUID(),
+        type: componentType as (typeof SUPPORTED_COMPONENTS)[number],
+        // TODO: get valid coordinates
+        coordinates: { x: 0, y: 88 },
+        properties: {
+          size: "default",
+          variant: "default",
+          value: "Hi, world",
+        },
       },
-    });
+    ]);
 
   return (
     <Sheet modal={false}>

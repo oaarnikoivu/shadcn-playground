@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 
 export default function useCut() {
   const selectedComponents = useSelected();
-  const { removeComponent } = useComponentActions();
+  const { removeComponents } = useComponentActions();
 
   const [cutComponents, setCutComponents] = useState<PlaygroundUIComponent[]>(
     [],
@@ -15,9 +15,7 @@ export default function useCut() {
       if (event.ctrlKey && event.key === "x") {
         event.preventDefault();
         setCutComponents([...selectedComponents]);
-        selectedComponents.forEach((component) =>
-          removeComponent(component.id),
-        );
+        removeComponents(selectedComponents.map((component) => component.id));
       }
     };
 
@@ -25,7 +23,7 @@ export default function useCut() {
     return () => {
       window.removeEventListener("keydown", handleKeyDown);
     };
-  }, [removeComponent, selectedComponents]);
+  }, [removeComponents, selectedComponents]);
 
   return {
     cutComponents,

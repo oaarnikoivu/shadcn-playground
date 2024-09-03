@@ -73,12 +73,11 @@ export default function BoundingBox() {
   const handleDragEnd = ({ delta }: DragEndEvent) => {
     if (!delta.x && !delta.y) return;
 
-    selectedComponents.forEach((c) => {
-      updateCoordinates(c.id, {
-        x: c.coordinates.x + delta.x,
-        y: c.coordinates.y + delta.y,
-      });
-    });
+    updateCoordinates(
+      selectedComponents.map((c) => c.id),
+      delta.x,
+      delta.y,
+    );
 
     isDraggingRef.current = false;
     initialComponentPositionsRef.current = {};

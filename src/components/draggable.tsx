@@ -11,8 +11,7 @@ type DraggableProps = {
 
 export default function Draggable({ component }: DraggableProps) {
   const components = useComponents();
-  const { selectComponent, selectComponents, unselectComponent } =
-    useComponentActions();
+  const { selectComponents } = useComponentActions();
 
   const { attributes, listeners, setNodeRef, transform } = useDraggable({
     id: component.groupId ?? component.id,
@@ -21,21 +20,18 @@ export default function Draggable({ component }: DraggableProps) {
   useClickOutsideDraggable(component);
 
   const handleSelectComponent = () => {
-    components.forEach((c) => {
-      if (c.selected) {
-        unselectComponent(c.id);
-      }
-    });
+    selectComponents(
+      components.filter((c) => c.selected).map((c) => c.id),
+      false,
+    );
 
-    if (component.groupId) {
-      selectComponents(
-        components
-          .filter((c) => c.groupId === component.groupId)
-          .map((c) => c.id),
-      );
-    } else {
-      selectComponent(component.id);
-    }
+    const componentsToSelect = component.groupId
+      ? components.filter((c) => c.groupId === component.groupId)
+      : [component];
+    selectComponents(
+      componentsToSelect.map((c) => c.id),
+      true,
+    );
   };
 
   return (

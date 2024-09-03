@@ -2,10 +2,11 @@ import { useComponentActions, useSelected } from "@/stores";
 import { Label } from "@/components/ui/label.tsx";
 import { Input } from "@/components/ui/input.tsx";
 import React, { useMemo } from "react";
+import { PlaygroundUIComponent } from "@/types/component";
 
 export default function Value() {
   const componentsToUpdate = useSelected();
-  const { updateProperties } = useComponentActions();
+  const { updateComponents } = useComponentActions();
 
   const value = useMemo(() => {
     if (!componentsToUpdate.length) return "";
@@ -25,12 +26,21 @@ export default function Value() {
   const handleValueChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const newValue = event.target.value;
 
-    componentsToUpdate.forEach((c) => {
-      updateProperties(c.id, {
-        ...c.properties,
-        value: newValue,
-      });
-    });
+    updateComponents(
+      componentsToUpdate.reduce(
+        (acc, c) => {
+          acc[c.id] = {
+            ...c,
+            properties: {
+              ...c.properties,
+              value: newValue,
+            },
+          };
+          return acc;
+        },
+        {} as Record<string, PlaygroundUIComponent>,
+      ),
+    );
   };
 
   return (

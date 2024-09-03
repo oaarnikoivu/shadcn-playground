@@ -14,8 +14,7 @@ import React, { useCallback, useEffect, useRef, useState } from "react";
 export default function Canvas() {
   const components = useComponents();
   const cursorType = useCursorType();
-  const { updateCoordinates, selectComponent, selectComponents } =
-    useComponentActions();
+  const { updateCoordinates, selectComponents } = useComponentActions();
 
   const sensors = useSensors(
     useSensor(MouseSensor, { activationConstraint: { distance: 10 } }),
@@ -77,14 +76,14 @@ export default function Canvas() {
     );
     if (!componentToSelect) return;
 
-    if (componentToSelect.groupId) {
-      const componentsToSelect = components.filter(
-        (c) => c.groupId === componentToSelect.groupId,
-      );
-      selectComponents(componentsToSelect.map((c) => c.id));
-    } else {
-      selectComponent(componentToSelect.id);
-    }
+    const componentsToSelect = componentToSelect.groupId
+      ? components.filter((c) => c.groupId === componentToSelect.groupId)
+      : [componentToSelect];
+
+    selectComponents(
+      componentsToSelect.map((c) => c.id),
+      true,
+    );
   };
 
   const handleDragEnd = ({ delta, active }: DragEndEvent) => {
@@ -99,17 +98,13 @@ export default function Canvas() {
       const componentsToUpdate = components.filter(
         (c) => c.groupId === componentToUpdate.groupId,
       );
-      componentsToUpdate.forEach((c) => {
-        updateCoordinates(c.id, {
-          x: c.coordinates.x + delta.x,
-          y: c.coordinates.y + delta.y,
-        });
-      });
+      updateCoordinates(
+        componentsToUpdate.map((c) => c.id),
+        delta.x,
+        delta.y,
+      );
     } else {
-      updateCoordinates(componentToUpdate.id, {
-        x: componentToUpdate.coordinates.x + delta.x,
-        y: componentToUpdate.coordinates.y + delta.y,
-      });
+      updateCoordinates([componentToUpdate.id], delta.x, delta.y);
     }
   };
 

@@ -1,23 +1,17 @@
-import { PlaygroundUIComponent, Properties } from "@/types/component";
+import { PlaygroundUIComponent } from "@/types/component";
 import isGroup from "@/utils/isGroup";
 import { StateCreator } from "zustand";
 
 export type ComponentSlice = {
   components: PlaygroundUIComponent[];
   componentActions: {
-    addComponent: (component: PlaygroundUIComponent) => void;
-    removeComponent: (id: string) => void;
-    selectComponent: (id: string) => void;
-    selectComponents: (ids: string[]) => void;
-    unselectComponent: (id: string) => void;
-    unselectAllComponents: () => void;
-    copyComponent: (id: string) => void;
+    addComponents: (components: PlaygroundUIComponent[]) => void;
+    updateComponents: (data: Record<string, PlaygroundUIComponent>) => void;
+    removeComponents: (ids: string[]) => void;
+    selectComponents: (ids: string[], select: boolean) => void;
+    copyComponents: (ids: string[]) => void;
     groupComponents: (ids: string[]) => void;
-    updateCoordinates: (
-      id: string,
-      coordinates: { x: number; y: number },
-    ) => void;
-    updateProperties: (id: string, properties: Properties) => void;
+    updateCoordinates: (ids: string[], deltaX: number, deltaY: number) => void;
     clearComponents: () => void;
   };
 };
@@ -30,56 +24,49 @@ export const createComponentSlice: StateCreator<
 > = (set, get) => ({
   components: [],
   componentActions: {
-    addComponent: (component) =>
-      set({ components: [...get().components, component] }),
-    removeComponent: (id: string) =>
-      set({ components: get().components.filter((c) => c.id !== id) }),
-    selectComponent: (id: string) =>
-      set((state) => ({
-        components: state.components.map((c) =>
-          c.id === id ? { ...c, selected: true } : { ...c, selected: false },
-        ),
-      })),
-    selectComponents: (ids: string[]) =>
-      set((state) => ({
-        components: state.components.map((c) => ({
-          ...c,
-          selected: ids.includes(c.id),
-        })),
-      })),
-    unselectComponent: (id: string) => {
+    addComponents: (components) =>
+      set({ components: [...get().components, ...components] }),
+    updateComponents: (data) => {
       set({
-        components: [
-          ...get().components.map((c) =>
-            c.id === id ? { ...c, selected: false } : c,
-          ),
-        ],
+        components: get().components.map((c) => (data[c.id] ? data[c.id] : c)),
       });
     },
-    unselectAllComponents: () =>
+    removeComponents: (ids: string[]) =>
       set({
-        components: get().components.map((c) => ({ ...c, selected: false })),
+        components: get().components.filter((c) => !ids.includes(c.id)),
       }),
-    copyComponent: (id: string) => {
-      const component = get().components.find((c) => c.id === id);
-      if (component) {
-        set({
-          components: [
-            ...get().components.map((c) =>
-              c.id === id ? { ...c, selected: false } : c,
-            ),
-            {
-              ...component,
-              id: crypto.randomUUID(),
-              coordinates: {
-                x: component.coordinates.x + 10,
-                y: component.coordinates.y + 10,
-              },
-              selected: true,
-            },
-          ],
-        });
-      }
+    selectComponents: (ids: string[], select: boolean) =>
+      set((state) => ({
+        components: state.components.map((c) =>
+          ids.includes(c.id) ? { ...c, selected: select } : c,
+        ),
+      })),
+    copyComponents: (ids: string[]) => {
+      const components = get().components;
+      const selectedComponents = components.filter((c) => ids.includes(c.id));
+
+      const groupId = crypto.randomUUID();
+
+      const newComponents = selectedComponents.map((component) => ({
+        ...component,
+        id: crypto.randomUUID(),
+        groupId: component.groupId ? groupId : undefined,
+        coordinates: {
+          x: component.coordinates.x + 10,
+          y: component.coordinates.y + 10,
+        },
+        selected: true,
+      }));
+
+      const updatedComponents = components.map((component) =>
+        ids.includes(component.id)
+          ? { ...component, selected: false }
+          : component,
+      );
+
+      set({
+        components: [...updatedComponents, ...newComponents],
+      });
     },
     groupComponents: (ids: string[]) => {
       const components = get().components;
@@ -95,18 +82,20 @@ export const createComponentSlice: StateCreator<
         ),
       }));
     },
-    updateCoordinates: (id: string, coordinates: { x: number; y: number }) =>
+    updateCoordinates: (ids: string[], deltaX: number, deltaY: number) => {
       set((state) => ({
         components: state.components.map((c) =>
-          c.id === id ? { ...c, coordinates } : c,
+          ids.includes(c.id)
+            ? {
+                ...c,
+                coordinates: {
+                  x: c.coordinates.x + deltaX,
+                  y: c.coordinates.y + deltaY,
+                },
+              }
+            : c,
         ),
-      })),
-    updateProperties: (id: string, properties: Properties) => {
-      set({
-        components: get().components.map((c) =>
-          c.id === id ? { ...c, properties } : c,
-        ),
-      });
+      }));
     },
     clearComponents: () => set({ components: [] }),
   },

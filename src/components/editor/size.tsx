@@ -2,10 +2,11 @@ import { Input } from "@/components/ui/input.tsx";
 import { useComponentActions, useSelectedByType } from "@/stores";
 import React, { useMemo } from "react";
 import Section from "@/components/editor/section.tsx";
+import { PlaygroundUIComponent } from "@/types/component";
 
 export default function Size() {
   const componentsToUpdate = useSelectedByType("input");
-  const { updateProperties } = useComponentActions();
+  const { updateComponents } = useComponentActions();
 
   const width = useMemo(() => {
     if (!componentsToUpdate.length) return "";
@@ -40,23 +41,41 @@ export default function Size() {
   const handleWidthChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newWidth = e.target.value as unknown as number;
 
-    componentsToUpdate.forEach((c) => {
-      updateProperties(c.id, {
-        ...c.properties,
-        width: newWidth,
-      });
-    });
+    updateComponents(
+      componentsToUpdate.reduce(
+        (acc, c) => {
+          acc[c.id] = {
+            ...c,
+            properties: {
+              ...c.properties,
+              width: newWidth,
+            },
+          };
+          return acc;
+        },
+        {} as Record<string, PlaygroundUIComponent>,
+      ),
+    );
   };
 
   const handleHeightChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newHeight = e.target.value as unknown as number;
 
-    componentsToUpdate.forEach((c) => {
-      updateProperties(c.id, {
-        ...c.properties,
-        height: newHeight,
-      });
-    });
+    updateComponents(
+      componentsToUpdate.reduce(
+        (acc, c) => {
+          acc[c.id] = {
+            ...c,
+            properties: {
+              ...c.properties,
+              height: newHeight,
+            },
+          };
+          return acc;
+        },
+        {} as Record<string, PlaygroundUIComponent>,
+      ),
+    );
   };
 
   return (

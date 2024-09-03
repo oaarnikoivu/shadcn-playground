@@ -4,20 +4,29 @@ import { useEffect } from "react";
 
 export default function usePaste(componentsInMemory: PlaygroundUIComponent[]) {
   const components = useComponents();
-  const { addComponent, copyComponent } = useComponentActions();
+  const { addComponents, copyComponents } = useComponentActions();
 
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
       if (event.ctrlKey && event.key === "v") {
         event.preventDefault();
+        const componentsToCopy: string[] = [];
+        const componentsToAdd: PlaygroundUIComponent[] = [];
         componentsInMemory.forEach((component) => {
           const foundComponent = components.find((c) => c.id === component.id);
           if (foundComponent) {
-            copyComponent(component.id);
+            componentsToCopy.push(component.id);
           } else {
-            addComponent(component);
+            componentsToAdd.push(component);
           }
         });
+        if (componentsToCopy.length > 0) {
+          copyComponents(componentsToCopy);
+        }
+
+        if (componentsToAdd.length > 0) {
+          addComponents(componentsToAdd);
+        }
       }
     };
 
@@ -25,5 +34,5 @@ export default function usePaste(componentsInMemory: PlaygroundUIComponent[]) {
     return () => {
       window.removeEventListener("keydown", handleKeyDown);
     };
-  }, [addComponent, components, componentsInMemory, copyComponent]);
+  }, [addComponents, components, componentsInMemory, copyComponents]);
 }

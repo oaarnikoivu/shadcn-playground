@@ -3,13 +3,16 @@ import { BUTTON_SIZES, BUTTON_VARIANTS } from "@/constants.ts";
 import { VariantProps } from "class-variance-authority";
 import { Button } from "@/components/ui/button.tsx";
 import { useComponentActions, useSelectedByType } from "@/stores";
-import { ButtonProperties as TButtonProperties } from "@/types/component.ts";
+import {
+  PlaygroundUIComponent,
+  ButtonProperties as TButtonProperties,
+} from "@/types/component.ts";
 import Section from "@/components/editor/section.tsx";
 import { useMemo } from "react";
 
 export default function ButtonProperties() {
   const componentsToUpdate = useSelectedByType("button");
-  const { updateProperties } = useComponentActions();
+  const { updateComponents } = useComponentActions();
 
   const size = useMemo(() => {
     if (!componentsToUpdate.length) return "";
@@ -47,21 +50,39 @@ export default function ButtonProperties() {
   }, [componentsToUpdate]);
 
   const handleSizeChange = (value: string) => {
-    componentsToUpdate.forEach((c) => {
-      updateProperties(c.id, {
-        ...c.properties,
-        size: value as VariantProps<typeof Button>["size"],
-      });
-    });
+    updateComponents(
+      componentsToUpdate.reduce(
+        (acc, c) => {
+          acc[c.id] = {
+            ...c,
+            properties: {
+              ...c.properties,
+              size: value as VariantProps<typeof Button>["size"],
+            },
+          };
+          return acc;
+        },
+        {} as Record<string, PlaygroundUIComponent>,
+      ),
+    );
   };
 
   const handleVariantChange = (value: string) => {
-    componentsToUpdate.forEach((c) => {
-      updateProperties(c.id, {
-        ...c.properties,
-        variant: value as VariantProps<typeof Button>["variant"],
-      });
-    });
+    updateComponents(
+      componentsToUpdate.reduce(
+        (acc, c) => {
+          acc[c.id] = {
+            ...c,
+            properties: {
+              ...c.properties,
+              variant: value as VariantProps<typeof Button>["variant"],
+            },
+          };
+          return acc;
+        },
+        {} as Record<string, PlaygroundUIComponent>,
+      ),
+    );
   };
 
   return (
