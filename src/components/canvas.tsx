@@ -57,6 +57,11 @@ export default function Canvas() {
 
   useEffect(() => {
     const handleWheel = (event: WheelEvent) => {
+      const target =  event.target as HTMLElement;      
+      const isInsideEditor = target.closest("#editor");
+
+      if (isInsideEditor) return;
+
       setTranslate((prev) => ({
         x: prev.x - event.deltaX,
         y: prev.y - event.deltaY,
